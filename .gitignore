@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+*.build.out
+
+# Generated decks / build dirs (the IR + figures are inputs; PDFs are outputs)
+build/
+*.pdf
+
+# Keep the golden fixture and committed sample figures despite the rules above
+!paper2beamer/tests/fixtures/**/figures/*.png
+
+# OS / editor
+.DS_Store
+*.swp

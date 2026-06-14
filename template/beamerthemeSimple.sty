@@ -1,0 +1,331 @@
+% =============================================================================
+% beamerthemeSimple.sty — a minimal, clean, standalone 16:9 Beamer theme
+%
+% Copyright (c) 2026 Chun-Hao Chang (Haouo).
+% Released under the MIT License; see the LICENSE file in the source repository
+% (https://github.com/Haouo/paper2beamer-skills). This single .sty is
+% self-contained and safe to copy into other projects under those terms.
+% Maintainer: Chun-Hao Chang <q18131500@gs.ncku.edu.tw>.
+%
+% Self-contained: no logos, no external image assets, no private branding.
+% Engines: XeLaTeX or LuaLaTeX (fontspec + optional CJK); pdfLaTeX also works
+% for Latin-only decks.
+%
+% Quick start:
+%   \documentclass[aspectratio=169]{beamer}
+%   \usetheme{Simple}
+%   \title[Short]{Full title}  \author{...}  \date{...}
+%   \begin{document}\titleframe ... \end{document}
+%   % Compile:  xelatex main.tex  (run twice; or: latexmk -xelatex main.tex)
+%
+% See beamerthemeSimple-manual.md for the full guide. Public API summary:
+%
+% --- OPTIONS (\usetheme[...]{Simple}) ----------------------------------------
+%   eyebrow={TEXT}     small title-page label, off by default (field-agnostic)
+%   density=normal|dense   tighter margins + type for result-heavy decks
+%   divider=on|off     auto section-divider frames (default on)
+%   overflowguard=on|off   hard-error when a frame body would reach the footer
+%                          (default off; opt-in robustness for finished decks)
+%   Unknown option values raise a package error rather than failing silently.
+%
+% --- COLORS (override BEFORE \usetheme; all use \providecolor) ----------------
+%   simpleAccent  primary accent (structure, rules)         default 30,90,160
+%   simpleAlert   caveat / \alert / alert blocks (gold)      default 158,108,24
+%   simpleExample example / desired-state blocks (green)     default 35,132,104
+%   simpleDark    ink / body text          simpleGray  muted secondary text
+%   simpleLine    hairlines                simplePanel faint block body
+%
+% --- SPECIAL FRAMES (optional convenience, Simple aesthetic) ------------------
+%   \titleframe                       plain unnumbered title page
+%   \statementframe{TEXT}             one big centered statement (unnumbered)
+%   \thanksframe[Headline][Subtitle]  quiet closing slide (both args optional)
+% These and the auto section dividers are unnumbered; see the manual.
+%
+% --- NOT decided by this theme -----------------------------------------------
+%   Math font and hyperref link colors are left to the deck (see the manual),
+%   so the theme does not conflict with bm/amsmath or override \hypersetup.
+% =============================================================================
+\ProvidesPackage{beamerthemeSimple}[2026/06/10 v3.2 Simple standalone Beamer theme]
+
+\mode<presentation>
+
+% ---------- options ----------
+\RequirePackage{etoolbox}
+\RequirePackage{xparse}
+\def\simple@eyebrow{}
+\def\simple@density{normal}
+\def\simple@divider{on}
+\def\simple@guard{off}
+\DeclareOptionBeamer{eyebrow}{\def\simple@eyebrow{#1}}
+\DeclareOptionBeamer{density}{\def\simple@density{#1}}
+\DeclareOptionBeamer{divider}{\def\simple@divider{#1}}
+\DeclareOptionBeamer{overflowguard}{\def\simple@guard{#1}}
+\ProcessOptionsBeamer
+
+% Reject unknown option values loudly instead of silently using the default.
+\newcommand{\simple@oneof}[3]{% #1 macro, #2 csv of allowed values, #3 option name
+  \def\simple@ok{0}%
+  \forcsvlist{\simple@checkval#1}{#2}%
+  \ifdefstring{\simple@ok}{0}{%
+    \PackageError{beamerthemeSimple}{Unknown #3 value `#1'; allowed: #2}{}%
+  }{}%
+}
+\newcommand{\simple@checkval}[2]{\ifdefstring{#1}{#2}{\def\simple@ok{1}}{}}
+\simple@oneof{\simple@density}{normal,dense}{density}
+\simple@oneof{\simple@divider}{on,off}{divider}
+\simple@oneof{\simple@guard}{on,off}{overflowguard}
+
+% ---------- fonts (engine-aware, graceful) ----------
+\RequirePackage{iftex}
+\ifboolexpr{ bool {xetex} or bool {luatex} }{%
+  % Modern Unicode engines: fontspec for both. (familydefault is already sans
+  % under beamer, so it is not touched.)
+  \RequirePackage{fontspec}%
+  \IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{}%
+  \IfFontExistsTF{Fira Mono}{\setmonofont{Fira Mono}}{}%
+  \ifXeTeX
+    % XeLaTeX CJK via xeCJK (only if installed). Affects CJK codepoints only.
+    \IfFileExists{xeCJK.sty}{%
+      \RequirePackage{xeCJK}%
+      \IfFontExistsTF{Noto Sans CJK TC}{\setCJKsansfont{Noto Sans CJK TC}\setCJKmainfont{Noto Sans CJK TC}}{%
+        \IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}\setCJKmainfont{Noto Sans CJK SC}}{%
+          \IfFontExistsTF{FandolHei}{\setCJKsansfont{FandolHei}\setCJKmainfont{FandolHei}}{}}}%
+    }{\PackageWarning{beamerthemeSimple}{xeCJK not found; CJK text will not render. Install the TeX Live `langcjk' collection (tlmgr install xecjk, or add langcjk to your nix texlive set) plus a CJK font such as Noto Sans CJK. Latin-only decks are unaffected.}}%
+  \else
+    % LuaLaTeX CJK via luatexja-fontspec (only if installed).
+    \IfFileExists{luatexja-fontspec.sty}{%
+      \RequirePackage{luatexja-fontspec}%
+      \IfFontExistsTF{Noto Sans CJK TC}{\setsansjfont{Noto Sans CJK TC}\setmainjfont{Noto Sans CJK TC}}{%
+        \IfFontExistsTF{Noto Sans CJK SC}{\setsansjfont{Noto Sans CJK SC}\setmainjfont{Noto Sans CJK SC}}{%
+          \IfFontExistsTF{FandolHei}{\setsansjfont{FandolHei}\setmainjfont{FandolHei}}{}}}%
+    }{\PackageWarning{beamerthemeSimple}{luatexja not found; CJK text will not render under LuaLaTeX. Install luatexja + a CJK font, or compile with XeLaTeX + xeCJK. Latin-only decks are unaffected.}}%
+  \fi
+  % Note: if the CJK fallback reaches FandolHei, it has no bold face, so bold
+  % CJK headings (frame titles) will not be visually bolder.
+}{%
+  % Legacy pdfTeX path: Latin only.
+  \RequirePackage[T1]{fontenc}%
+  \RequirePackage{lmodern}%
+  \PackageInfo{beamerthemeSimple}{pdfLaTeX engine: CJK is disabled. Use XeLaTeX (xeCJK) or LuaLaTeX (luatexja) for CJK decks.}%
+}
+
+% Keep the total frame count honest when \appendix is used, if available.
+\IfFileExists{appendixnumberbeamer.sty}{\RequirePackage{appendixnumberbeamer}}{}
+
+% ---------- colors ----------
+% Only define if the user has not already set them before \usetheme.
+\providecolor{simpleAccent}{RGB}{30,90,160}   % primary accent
+\providecolor{simpleAlert}{RGB}{158,108,24}   % caveat / alert (gold), AA on white (4.55:1)
+\providecolor{simpleExample}{RGB}{35,132,104} % example / desired (green)
+\providecolor{simpleDark}{RGB}{31,36,42}      % ink / body text
+\providecolor{simpleGray}{RGB}{102,108,116}   % muted secondary text
+\providecolor{simpleLine}{RGB}{218,223,228}   % hairlines
+\providecolor{simplePanel}{RGB}{247,249,251}  % faint block body
+
+% structure + text
+\setbeamercolor{normal text}{fg=simpleDark,bg=white}
+\setbeamercolor{structure}{fg=simpleAccent}
+\setbeamercolor{titlelike}{fg=simpleDark}
+\setbeamercolor{title}{fg=simpleDark}
+\setbeamercolor{subtitle}{fg=simpleGray}
+\setbeamercolor{author}{fg=simpleGray}
+\setbeamercolor{institute}{fg=simpleGray}
+\setbeamercolor{date}{fg=simpleGray}
+\setbeamercolor{frametitle}{fg=simpleDark,bg=white}
+\setbeamercolor{framesubtitle}{fg=simpleGray}
+\setbeamercolor{footline}{fg=simpleGray,bg=white}
+% inline semantics (so \alert matches the alert block)
+\setbeamercolor{alerted text}{fg=simpleAlert}
+\setbeamercolor{example text}{fg=simpleExample}
+% lists
+\setbeamercolor{itemize item}{fg=simpleAccent}
+\setbeamercolor{itemize subitem}{fg=simpleExample}
+\setbeamercolor{itemize subsubitem}{fg=simpleGray}
+\setbeamercolor{enumerate item}{fg=simpleAccent}
+\setbeamercolor{enumerate subitem}{fg=simpleGray}
+\setbeamercolor{description item}{fg=simpleAccent}
+% thin-accent blocks: ink titles, faint tinted bodies, a colored left rule
+\setbeamercolor{block title}{fg=simpleDark}
+\setbeamercolor{block body}{fg=simpleDark,bg=simplePanel}
+\setbeamercolor{block title alerted}{fg=simpleDark}
+\setbeamercolor{block body alerted}{fg=simpleDark,bg=simpleAlert!10}
+\setbeamercolor{block title example}{fg=simpleDark}
+\setbeamercolor{block body example}{fg=simpleDark,bg=simpleExample!9}
+% table of contents
+\setbeamercolor{section in toc}{fg=simpleDark}
+\setbeamercolor{subsection in toc}{fg=simpleGray}
+\setbeamercolor{section number projected}{fg=white,bg=simpleAccent}
+% captions
+\setbeamercolor{caption name}{fg=simpleAccent}
+% bibliography
+\setbeamercolor{bibliography item}{fg=simpleAccent}
+\setbeamercolor{bibliography entry author}{fg=simpleDark}
+\setbeamercolor{bibliography entry title}{fg=simpleDark}
+\setbeamercolor{bibliography entry location}{fg=simpleGray}
+\setbeamercolor{bibliography entry note}{fg=simpleGray}
+
+% ---------- inner / outer styling ----------
+\setbeamertemplate{navigation symbols}{}     % no nav clutter
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}[colon]
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{footline}{size=\scriptsize}
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamerfont{caption}{size=\footnotesize}
+\setbeamerfont{caption name}{series=\bfseries}
+
+% Density-driven margins and frame-title / block sizing.
+\ifdefstring{\simple@density}{dense}{%
+  \setbeamersize{text margin left=7mm,text margin right=7mm}%
+  \setbeamerfont{frametitle}{series=\bfseries,size=\normalsize}%
+  \setbeamerfont{block title}{series=\bfseries,size=\small}%
+  \setbeamerfont{block body}{size=\small}%
+  \newcommand{\simple@margin}{7mm}%
+}{%
+  \setbeamersize{text margin left=8mm,text margin right=8mm}%
+  \setbeamerfont{frametitle}{series=\bfseries,size=\large}%
+  \newcommand{\simple@margin}{8mm}%
+}
+
+% Block emphasis via a thin colored left rule, not a filled header. An empty
+% block title prints neither the rule nor the title gap (no dangling tick).
+\newcommand{\simple@blockbegin}[3]{% #1 rule color, #2 title color, #3 body color
+  \par\vskip\medskipamount%
+  \begin{beamercolorbox}[sep=2.4mm]{#3}%
+    \ifdefempty{\insertblocktitle}{}{%
+      {\usebeamerfont{block title}\usebeamercolor[fg]{#2}%
+        {\color{#1}\rule[-0.45ex]{2.4pt}{2.3ex}}\hspace{2mm}\insertblocktitle\par}%
+      \vskip1.4mm}%
+    \usebeamerfont{block body}\usebeamercolor[fg]{#3}%
+}
+\newcommand{\simple@blockend}{\end{beamercolorbox}\vskip\smallskipamount}
+\setbeamertemplate{block begin}{\simple@blockbegin{simpleAccent}{block title}{block body}}
+\setbeamertemplate{block end}{\simple@blockend}
+\setbeamertemplate{block alerted begin}{\simple@blockbegin{simpleAlert}{block title alerted}{block body alerted}}
+\setbeamertemplate{block alerted end}{\simple@blockend}
+\setbeamertemplate{block example begin}{\simple@blockbegin{simpleExample}{block title example}{block body example}}
+\setbeamertemplate{block example end}{\simple@blockend}
+
+% Frame title: section-name eyebrow + bold title + hairline rule. The title
+% box and the hairline share one geometry (full width, padded by the margin),
+% so the rule and the title text always have the same left and right edges.
+% A long \insertsection eyebrow wraps above the title; keep section names short.
+\setbeamertemplate{frametitle}{%
+  \vskip2.8mm%
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=\simple@margin,rightskip=\simple@margin]{frametitle}%
+    \ifdefempty{\insertsection}{}{{\color{simpleAccent}\scriptsize\insertsection\par\vskip1pt}}%
+    \usebeamerfont{frametitle}\insertframetitle%
+    \ifx\insertframesubtitle\empty\else%
+      \par\vskip1pt{\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}%
+    \fi%
+    \vskip1.2mm{\color{simpleLine}\rule{\dimexpr\paperwidth-2\simple@margin\relax}{0.4pt}}%
+  \end{beamercolorbox}%
+}
+
+% Title page: a short restrained accent rule and an optional eyebrow label.
+\setbeamertemplate{title page}{%
+  \vspace*{11mm}
+  \ifdefempty{\simple@eyebrow}{}{{\scriptsize\bfseries\color{simpleAccent}\simple@eyebrow\par\vspace{6mm}}}%
+  {\color{simpleAccent}\rule{22mm}{1.4pt}}\par\vspace{7mm}
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+  \ifx\insertsubtitle\empty\else%
+    \vspace{2.5mm}{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+  \fi%
+  \vfill
+  {\usebeamercolor[fg]{author}\insertauthor\par}
+  {\usebeamercolor[fg]{institute}\insertinstitute\par}
+  {\usebeamercolor[fg]{date}\insertdate\par}
+}
+
+% Minimal footline. The two cells together span the full paper width, so the
+% frame number's right edge lines up with the body's right margin. Give every
+% deck a short title (\title[Short]{Long}); a long title with no short form
+% overflows its cell and overlaps the frame number.
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.6ex,dp=1ex,leftskip=\simple@margin]{footline}%
+      \usebeamerfont{footline}\insertshorttitle%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.6ex,dp=1ex,rightskip=\simple@margin]{footline}%
+      \hfill\usebeamerfont{footline}\insertframenumber\,/\,\inserttotalframenumber%
+    \end{beamercolorbox}%
+  }%
+  \vskip2pt%
+}
+
+% Compact section divider (the section number gives talk orientation).
+% Unnumbered, like the other [plain] structural frames, so it does not inflate
+% the frame total shown on content slides.
+\ifdefstring{\simple@divider}{off}{}{%
+  \AtBeginSection[]{%
+    \begin{frame}[plain,noframenumbering]
+      \vspace*{20mm}
+      {\scriptsize\bfseries\color{simpleGray}\insertsectionnumber}\par\vspace{4mm}
+      {\LARGE\bfseries\insertsection}\par\vspace{2.5mm}
+      {\color{simpleAccent}\rule{.22\paperwidth}{1pt}}
+    \end{frame}%
+  }%
+}
+
+% ---------- convenience frames (Simple aesthetic, no branding) ----------
+% All special frames are [plain] and unnumbered for a consistent frame total.
+\newcommand{\titleframe}{%
+  \begin{frame}[plain,noframenumbering]\titlepage\end{frame}}
+
+\newcommand{\statementframe}[1]{%
+  \begin{frame}[plain,noframenumbering]%
+    \centering\vfill
+    {\usebeamerfont{title}\usebeamercolor[fg]{title}#1\par}%
+    \vskip4mm{\color{simpleAccent}\rule{22mm}{1.4pt}}%
+    \vfill
+  \end{frame}}
+
+% Quiet closing slide. Both arguments optional; headline defaults to "Thank you".
+% Uses two bracket-optionals (avoids xparse's discouraged `g' argument type).
+\NewDocumentCommand{\thanksframe}{O{Thank you} O{}}{%
+  \begin{frame}[plain,noframenumbering]%
+    \centering\vfill
+    {\usebeamerfont{title}\usebeamercolor[fg]{title}#1\par}%
+    \notblank{#2}{\vskip3mm{\usebeamercolor[fg]{subtitle}\large #2\par}}{}%
+    \vskip5mm{\color{simpleAccent}\rule{22mm}{1.4pt}}%
+    \vfill
+  \end{frame}}
+
+% ---------- opt-in vertical overflow guard ----------
+% When overflowguard=on, stop the build if a frame body would grow past the
+% safe text height (i.e. reach into the footer). Off by default so existing
+% decks are never broken by a hard error. Skips [plain] and [allowframebreaks]
+% frames, where overflow is intentional.
+%
+% This hooks beamer's internal \beamer@autobreakframebox (present in current
+% beamer; verified against TeX Live 2025). If a future beamer renames it, the
+% \pretocmd below fails and prints a warning rather than installing a broken
+% guard. The test uses \ht only — matching beamer's own "Overfull \vbox"
+% criterion, where a box's depth (the last line's descender) is absorbed by the
+% bottom margin rather than spilling into the footer.
+\ifdefstring{\simple@guard}{on}{%
+  \newlength{\simple@bodyht}%
+  \newcommand{\simple@checkoverflow}{%
+    \ifbeamer@plainframe\else
+      \ifbeamer@autobreak\else
+        \setlength{\simple@bodyht}{\ht\beamer@framebox}%
+        \ifdim\simple@bodyht>\dimexpr\textheight+0.1pt\relax
+          \PackageError{beamerthemeSimple}{Frame body overflows the safe area on
+            slide \the\numexpr\insertframenumber\relax: content is
+            \the\simple@bodyht\space tall but only \the\textheight\space fits}{%
+            Shorten or split the slide, use density=dense, or
+            \string\begin{frame}[allowframebreaks].}%
+        \fi
+      \fi
+    \fi}%
+  \pretocmd{\beamer@autobreakframebox}{\simple@checkoverflow}{}{%
+    \PackageWarning{beamerthemeSimple}{Could not install the overflow guard
+      (beamer internals changed); slides may silently overflow the footer.}}%
+}{}
+
+\mode<all>

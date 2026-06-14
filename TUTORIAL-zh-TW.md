@@ -3,8 +3,37 @@
 > [English](TUTORIAL.md)
 
 這份教學會帶你把一篇論文轉成可以編譯的 Beamer 投影片，並說明每個階段會產生什麼，包括故意
-弄出一個爆頁、看它怎麼在 slide 這層被修掉，還有怎麼抽換 theme。以下指令都假設你人在
-repository 根目錄，而且 `xelatex`、`latexmk`、`uv` 都在 PATH 上。
+弄出一個爆頁、看它怎麼在 slide 這層被修掉，還有怎麼抽換 theme。
+
+## 安裝（只需一次）
+
+最省事的方式：把下面這段話貼給 Claude Code，讓它幫你裝好。
+
+> 幫我安裝 paper2beamer 這個 skill：
+> 1. 把 `git@github.com:Haouo/PaperTalk-IR-Skills.git` clone 到 `~/workspace/`（用 HTTPS 也行）。
+> 2. 把 repo 裡的 `paper2beamer/` 資料夾 symlink 到 `~/.claude/skills/paper2beamer`，這樣 Claude Code 才找得到這個 skill。
+> 3. 順便檢查 `xelatex`、`latexmk`、`uv` 有沒有裝，缺哪個就告訴我怎麼補。
+
+裝完之後開一個新的 Claude Code session，`paper2beamer` 就會出現在可用的 skill 裡。
+
+想自己動手的話，就這三步：
+
+```bash
+# 1. 把 repo 抓下來
+git clone git@github.com:Haouo/PaperTalk-IR-Skills.git ~/workspace/papertalk-ir-skills
+
+# 2. symlink 進 skills 資料夾，讓 Claude Code 認得這個 skill
+ln -s ~/workspace/papertalk-ir-skills/paper2beamer ~/.claude/skills/paper2beamer
+
+# 3. 確認三個工具都在
+xelatex --version && latexmk --version && uv --version
+```
+
+`xelatex`、`latexmk` 來自 TeX Live；`uv` 是 Python 工具的執行器（Docling 第一次跑會自己裝）。
+三個都有就可以開始。
+
+下面的步驟都假設你人在 clone 下來的 repo 根目錄（也就是 skill 的工作區），而且這三個工具都
+在 PATH 上。
 
 ## 1. 說明你的 intent
 

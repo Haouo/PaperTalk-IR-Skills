@@ -11,6 +11,9 @@
 整個流程是 **Intent-Aware**（會先問你要做什麼樣的演講，再據此量身打造投影片）
 與 **Theme-Aware**（backend 精通內建 *Simple* 主題的語彙，且絕不讓單頁溢出）。
 
+**第一次使用？** 先看手把手的 [Tutorial](./TUTORIAL.md)——涵蓋安裝（包含一段
+可直接交給 Claude Code 幫你安裝的 prompt）與完整的第一份投影片教學。
+
 English： [README.md](./README.md)
 
 ---

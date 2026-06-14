@@ -14,6 +14,10 @@ The flow is **intent-aware** (it asks what talk you are giving and tailors the
 deck to it) and **theme-aware** (the backend speaks the bundled *Simple* theme's
 vocabulary fluently, and never overflows a slide).
 
+**New here?** Start with the hand-holding [Tutorial](./TUTORIAL.md) — it covers
+install (including a prompt that lets Claude Code install it for you) and a full
+first-deck walkthrough.
+
 繁體中文版： [README-zh-TW.md](./README-zh-TW.md)
 
 ---

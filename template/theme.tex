@@ -1,0 +1,33 @@
+% =============================================================================
+% theme.tex — workspace-wide Beamer theme selection.
+%
+% Every deck under ./slides/ loads THIS file (via \InputIfFileExists). Change it
+% once here and all decks in this workspace restyle together. If you delete this
+% file, decks fall back to the bundled Simple theme.
+%
+% --- Option 1: use the bundled Simple theme (default) ---------------------------
+% To tweak its colors, set them BEFORE \usetheme (all use \providecolor):
+%   \definecolor{simpleAccent}{RGB}{160,40,40}   % primary accent
+%   \definecolor{simpleAlert}{RGB}{158,108,24}   % caveat / alert blocks
+%   \definecolor{simpleExample}{RGB}{35,132,104} % example / desired blocks
+% The Simple theme also accepts options:
+%   \usetheme[eyebrow={PAPER READING DECK}]{Simple}  % small title-page label
+%   \usetheme[density=dense]{Simple}                 % tighter margins + type
+%   \usetheme[divider=off]{Simple}                   % no section divider frames
+%   \usetheme[overflowguard=on]{Simple}              % error if a slide overflows
+% Full guide: beamerthemeSimple-manual.md. Demo deck: demo-theme.tex.
+\usetheme{Simple}
+
+% --- Option 2: use any Beamer theme installed in your TeX distribution ----------
+% Comment out the line above and uncomment one of these:
+%   \usetheme{metropolis}
+%   \usetheme{Madrid}
+%   \usetheme{Berlin}
+
+% --- Option 3: bring your own custom theme --------------------------------------
+% Drop your `beamerthemeMyTheme.sty` (and any images it needs) at this workspace
+% root — the deck Makefile's TEXINPUTS=../../ makes it discoverable — then use:
+%   \usetheme{MyTheme}
+% If your theme references image assets, put them at the workspace root or in the
+% deck's figures/ (both are on \graphicspath); or set an absolute path.
+% =============================================================================

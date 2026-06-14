@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "schema": "1.0",
+    "ir_version": "v4",
+    "source_pdf": "/fixtures/overflow.pdf",
+    "produced_by_pass": "layout-pass"
+  },
+  "intent": { "occasion": "lab-meeting", "duration_min": 30, "language": "en" },
+  "paper": {
+    "title": "Overflow Fixture",
+    "authors": ["T. Ester"],
+    "sections": [{ "id": "sec1", "title": "S", "level": 1, "text": "x" }]
+  },
+  "figures": [],
+  "claims": [],
+  "story": [],
+  "slides": [
+    { "frame_type": "titleframe" },
+    {
+      "frame_type": "frame",
+      "title": "Deliberately overstuffed frame",
+      "body": [
+        { "block": "itemize", "items": [
+          "Line one of many that should not fit on a single slide at all",
+          "Line two of many that should not fit on a single slide at all",
+          "Line three of many that should not fit on a single slide at all",
+          "Line four of many that should not fit on a single slide at all",
+          "Line five of many that should not fit on a single slide at all",
+          "Line six of many that should not fit on a single slide at all",
+          "Line seven of many that should not fit on a single slide at all",
+          "Line eight of many that should not fit on a single slide at all",
+          "Line nine of many that should not fit on a single slide at all",
+          "Line ten of many that should not fit on a single slide at all",
+          "Line eleven of many that should not fit on a single slide at all",
+          "Line twelve of many that should not fit on a single slide at all",
+          "Line thirteen of many that should not fit on a single slide at all",
+          "Line fourteen of many that should not fit on a single slide at all",
+          "Line fifteen of many that should not fit on a single slide at all",
+          "Line sixteen of many that should not fit on a single slide at all"
+        ] }
+      ]
+    },
+    { "frame_type": "thanksframe" }
+  ]
+}

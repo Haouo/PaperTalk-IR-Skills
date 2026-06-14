@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "schema": "1.0",
+    "ir_version": "v4",
+    "source_pdf": "/fixtures/sample.pdf",
+    "produced_by_pass": "layout-pass"
+  },
+  "intent": {
+    "occasion": "journal-club",
+    "duration_min": 20,
+    "audience": "NLP graduate students",
+    "emphasis": ["method", "results"],
+    "language": "en",
+    "depth": "balanced",
+    "domain_ref": "template/domain.md"
+  },
+  "paper": {
+    "title": "Faster Decoding via Sparse Attention Routing",
+    "authors": ["A. Researcher", "B. Coauthor"],
+    "venue": "Proceedings of Example 2026",
+    "abstract": "We make decoding faster.",
+    "sections": [
+      { "id": "sec1", "title": "Introduction", "level": 1, "text": "Decoding is slow. We route attention sparsely. Special chars to escape: 50% & <_ {x}." },
+      { "id": "sec4", "title": "Method", "level": 1, "text": "The router selects k heads per token. See Figure 1." },
+      { "id": "sec5", "title": "Results", "level": 1, "text": "We improve BLEU by 3.2 and decode 2x faster." }
+    ],
+    "references": []
+  },
+  "figures": [
+    {
+      "id": "fig1",
+      "kind": "figure",
+      "page": 3,
+      "path": "figures/fig1.png",
+      "caption": "Figure 1: Sparse attention routing selects k heads per token.",
+      "referenced_in": ["sec4"]
+    },
+    {
+      "id": "figmissing",
+      "kind": "figure",
+      "page": 9,
+      "path": "figures/does-not-exist.png",
+      "caption": "Figure 2: This asset is intentionally missing to exercise the placeholder path.",
+      "referenced_in": []
+    }
+  ],
+  "claims": [],
+  "story": [],
+  "slides": [
+    { "frame_type": "titleframe" },
+    {
+      "frame_type": "frame",
+      "title": "The problem: decoding is slow",
+      "story_ref": "u1",
+      "body": [
+        { "block": "alertblock", "title": "Cost", "items": ["Latency grows with context", "Dense attention dominates the budget (50% & more)"] }
+      ],
+      "notes": "Open with the latency pain point."
+    },
+    {
+      "frame_type": "frame",
+      "title": "Method: sparse attention routing",
+      "story_ref": "u2",
+      "body": [
+        { "block": "itemize", "items": ["Route each token to k heads; skip the rest"] },
+        { "figure": "fig1", "width": "0.55\\textwidth", "caption": "" }
+      ]
+    },
+    {
+      "frame_type": "frame",
+      "title": "A missing figure degrades gracefully",
+      "story_ref": "u2b",
+      "body": [
+        { "figure": "figmissing", "width": "0.5\\textwidth" }
+      ]
+    },
+    {
+      "frame_type": "frame",
+      "title": "Results",
+      "story_ref": "u3",
+      "body": [
+        { "block": "exampleblock", "title": "Headline numbers", "items": ["+3.2 BLEU over baseline", "2x faster decoding"] }
+      ]
+    },
+    { "frame_type": "statementframe", "text": "Route attention sparsely; keep the quality, drop the cost." },
+    { "frame_type": "thanksframe", "headline": "Thank you", "subtitle": "Questions welcome" }
+  ]
+}

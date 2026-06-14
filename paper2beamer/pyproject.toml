@@ -1,0 +1,27 @@
+[project]
+name = "paper2beamer"
+version = "0.1.0"
+description = "Deterministic tooling for the paper2beamer skill (ingest, log parsing, deck assembly, repair routing)."
+requires-python = ">=3.11"
+# No hard runtime deps: the log parser, repair router, and deck assembler are
+# pure stdlib. Docling (heavy) lives in the optional 'ingest' group below, so
+# unit tests and CI never pull torch. frontend_docling imports it lazily.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+# Deterministic PDF ingest engine. Install on demand:  uv sync --group ingest
+# Pinned to a major line so extraction behaviour does not shift under us.
+ingest = [
+    "docling>=2,<3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Let `from scripts.x import ...` resolve when running pytest from this dir.
+pythonpath = ["."]
+# Heavy, model-downloading tests are marked 'heavy' and skipped in CI.
+markers = ["heavy: tests that run the full Docling model pipeline"]
+addopts = "-m 'not heavy'"

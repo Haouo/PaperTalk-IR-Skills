@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    name: Python tooling (unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: paper2beamer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Sync dev deps
+        # Install the dev group but DO NOT run heavy Docling model tests in CI.
+        run: uv sync --group dev
+      - name: Unit tests (excludes 'heavy' marker by default)
+        run: uv run pytest -q
+
+  latex-smoke:
+    name: LaTeX golden-deck smoke build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install TeX Live (xelatex + latexmk)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex texlive-latex-extra latexmk
+      - name: Assemble and build the golden deck
+        run: |
+          python3 paper2beamer/scripts/emit_beamer.py \
+            --manifest paper2beamer/tests/fixtures/golden-deck \
+            --out /tmp/golden
+          bash paper2beamer/scripts/build.sh /tmp/golden
+      - name: Assert the PDF exists and the log is clean
+        run: |
+          test -f /tmp/golden/main.pdf
+          python3 paper2beamer/scripts/latex_log.py /tmp/golden/main.log --assert-clean

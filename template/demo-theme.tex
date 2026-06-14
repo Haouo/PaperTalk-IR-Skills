@@ -1,0 +1,95 @@
+% demo-theme.tex — a self-contained tour of the Simple Beamer theme.
+% Build:  xelatex demo-theme.tex && xelatex demo-theme.tex
+% (Two passes so the footer frame total is correct.)
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Simple}
+
+\usepackage{booktabs}
+
+\title[Simple theme]{The Simple Beamer Theme}
+\subtitle{A standalone tour of its features}
+\author{paper2beamer-skills}
+\institute{Self-contained demo deck}
+\date{2026}
+
+\begin{document}
+
+\titleframe
+
+\begin{frame}{What this demo covers}
+  \begin{itemize}
+    \item Frame titles with a section eyebrow and a hairline rule.
+    \item Thin-rule blocks, inline \alert{semantic emphasis}, and theorems.
+    \item Tables, figures with numbered captions, and a bibliography.
+    \item Section dividers, special frames, and the quiet footer.
+  \end{itemize}
+\end{frame}
+
+\section{Blocks and semantics}
+
+\begin{frame}{Blocks carry meaning by color, not decoration}
+  \begin{block}{Claim}
+    Blocks are marked by a thin colored left rule and a faint tinted body.
+  \end{block}
+  \begin{alertblock}{Caveat}
+    Alert content is gold, matching inline \alert{alerted text}.
+  \end{alertblock}
+  \begin{exampleblock}{Desired behavior}
+    Example content is green.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Theorems and math}
+  \begin{theorem}[Selection rule]
+    Include a figure only when its evidence value is high:
+    \[ U(f) = \alpha R(f) + \beta E(f) - \gamma C(f). \]
+  \end{theorem}
+  \begin{definition}
+    \emph{Evidence value} is the information a figure adds beyond its caption.
+  \end{definition}
+\end{frame}
+
+\section{Data}
+
+\begin{frame}{A dense but readable table}
+  \begin{table}
+    \centering
+    \begin{tabular}{lrrr}
+      \toprule
+      Condition & Baseline & Proposed & Delta \\
+      \midrule
+      Small  & 1.00 & 1.18 & +18\% \\
+      Medium & 1.00 & 1.42 & +42\% \\
+      Large  & 1.00 & 1.71 & +71\% \\
+      \bottomrule
+    \end{tabular}
+    \caption{A numbered caption uses the accent label color.}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Lists, descriptions, and references}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{enumerate}\item first \item second \item third\end{enumerate}
+      \begin{description}\item[Term] a defined word\end{description}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      A citation~\cite{demo} renders in the accent color.
+      \begin{thebibliography}{9}
+        \bibitem{demo} A. Author. \emph{A Representative Title}. Venue, 2026.
+      \end{thebibliography}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Special frames}
+
+\statementframe{A single idea deserves a single slide.}
+
+\begin{frame}{Closing}
+  Use \texttt{\textbackslash thanksframe} for a quiet end slide.
+\end{frame}
+
+\thanksframe[Thank you][Questions welcome]
+
+\end{document}

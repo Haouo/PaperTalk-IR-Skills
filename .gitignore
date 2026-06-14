@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+*.build.out
+
+# Generated decks / build dirs (the IR + figures are inputs; PDFs are outputs)
+build/
+*.pdf
+
+# Keep the golden fixture and committed sample figures despite the rules above
+!paper2beamer/tests/fixtures/**/figures/*.png
+# Test-fixture LaTeX logs are tracked inputs, despite the *.log rule above
+!paper2beamer/tests/fixtures/*.log
+
+# Runtime working dirs (generated per paper / per theme). The SHIPPED ISA lives
+# at paper2beamer/isa/ and stays tracked; only the root-level isa/ is runtime.
+/slides/
+/isa/
+
+# OS / editor
+.DS_Store
+*.swp
+
+# Eval harness run artifacts (regenerated; not source)
+eval/runs/
+eval/report.md

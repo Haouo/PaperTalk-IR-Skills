@@ -28,18 +28,36 @@
 - **uv**，用來跑 Python 工具（Docling 會在需要時才裝）。
 - Claude Code，並把這個 repository 當成工作區。
 
+## 安裝（只需一次）
+
+最省事的方式：把這段話貼給 Claude Code，讓它幫你裝好。
+
+> 幫我安裝 paper2beamer 這個 skill：把 `git@github.com:Haouo/PaperTalk-IR-Skills.git`
+> clone 到 `~/workspace/`，把它的 `paper2beamer/` 資料夾 symlink 到
+> `~/.claude/skills/paper2beamer`，再確認 `xelatex`、`latexmk`、`uv` 都有裝。
+
+自己動手就這三步：
+
+```bash
+git clone git@github.com:Haouo/PaperTalk-IR-Skills.git ~/workspace/papertalk-ir-skills
+ln -s ~/workspace/papertalk-ir-skills/paper2beamer ~/.claude/skills/paper2beamer
+xelatex --version && latexmk --version && uv --version
+```
+
+開一個新的 Claude Code session，`paper2beamer` 就會出現在可用的 skill 裡。完整流程見
+[TUTORIAL-zh-TW.md](TUTORIAL-zh-TW.md)。
+
 ## 快速開始
 
-1. 先確認 `xelatex`、`latexmk`、`uv` 都在 PATH 上。
-2. 在 Claude Code 裡請 skill 處理一篇論文：
+1. 在 Claude Code 裡請 skill 處理一篇論文：
 
    > 把 `paper.pdf` 做成投影片，15 分鐘的研討會報告。
 
-3. Skill 會先問你的 **intent**，用 Docling 把 PDF 讀進來，先擬出 **Narrative IR**，然後停在
+2. Skill 會先問你的 **intent**，用 Docling 把 PDF 讀進來，先擬出 **Narrative IR**，然後停在
    **審查關卡**等你確認。
-4. 你點頭之後，它會接著規劃 **Slide IR**、把投影片產生並組好、編譯，遇到爆頁或錯誤就在對的
+3. 你點頭之後，它會接著規劃 **Slide IR**、把投影片產生並組好、編譯，遇到爆頁或錯誤就在對的
    那一層修掉。
-5. 最後成品是 `slides/<paper-slug>/main.pdf`，過程中的中間產物也都放在旁邊，方便你檢查。
+4. 最後成品是 `slides/<paper-slug>/main.pdf`，過程中的中間產物也都放在旁邊，方便你檢查。
 
 ## Theme
 

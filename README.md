@@ -31,18 +31,37 @@ and [docs/ir-and-isa.md](docs/ir-and-isa.md) for the full rationale.
 - **uv** for the Python tooling (Docling is pulled on demand).
 - Claude Code, with this repository as the workspace.
 
+## Install (once)
+
+Easiest: hand this prompt to Claude Code and let it set everything up.
+
+> Install the paper2beamer skill: clone `git@github.com:Haouo/PaperTalk-IR-Skills.git`
+> into `~/workspace/`, symlink its `paper2beamer/` directory to
+> `~/.claude/skills/paper2beamer`, and check that `xelatex`, `latexmk`, and `uv`
+> are installed.
+
+By hand:
+
+```bash
+git clone git@github.com:Haouo/PaperTalk-IR-Skills.git ~/workspace/papertalk-ir-skills
+ln -s ~/workspace/papertalk-ir-skills/paper2beamer ~/.claude/skills/paper2beamer
+xelatex --version && latexmk --version && uv --version
+```
+
+Start a fresh Claude Code session and `paper2beamer` appears among the available
+skills. See [TUTORIAL.md](TUTORIAL.md) for the full walkthrough.
+
 ## Quick start
 
-1. Make sure `xelatex`, `latexmk`, and `uv` are on your PATH.
-2. In Claude Code, point the skill at a paper:
+1. In Claude Code, point the skill at a paper:
 
    > Turn `paper.pdf` into slides — a 15-minute conference talk.
 
-3. The skill asks for your **intent**, ingests the PDF with Docling, drafts the
+2. The skill asks for your **intent**, ingests the PDF with Docling, drafts the
    **Narrative IR**, and pauses at the **review gate** for your approval.
-4. After you approve, it plans the **Slide IR**, emits and assembles the deck,
+3. After you approve, it plans the **Slide IR**, emits and assembles the deck,
    compiles it, and repairs any overflow or error at the right level.
-5. The result is `slides/<paper-slug>/main.pdf`, with all intermediate artifacts
+4. The result is `slides/<paper-slug>/main.pdf`, with all intermediate artifacts
    beside it for inspection.
 
 ## Themes

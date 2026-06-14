@@ -1,0 +1,7 @@
+This is XeTeX, Version 3.141592653
+[1]
+! Undefined control sequence.
+l.42 \badmacro
+              {x}
+[2]
+Output written on main.pdf (2 pages, 9999 bytes).

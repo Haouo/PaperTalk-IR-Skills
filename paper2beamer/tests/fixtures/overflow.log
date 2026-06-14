@@ -1,0 +1,5 @@
+This is XeTeX, Version 3.141592653
+[1] [2]
+! Package beamerthemeSimple Error: Frame body overflows the safe area on slide 7: content is 210.0pt tall but only 180.0pt fits.
+Overfull \vbox (30.0pt too high) detected at line 0
+Output written on main.pdf (9 pages, 54321 bytes).

@@ -1,0 +1,3 @@
+S00 beat:N00 plain
+S01 beat:N01
+S02 beat:N01

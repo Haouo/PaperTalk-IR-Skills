@@ -101,3 +101,24 @@ def test_resolve_provides_argspecs_for_known_custom_macros():
     assert eff.macro_argspecs["statementframe"] == "{"
     # thanksframe takes two optional args -> "[[".
     assert eff.macro_argspecs["thanksframe"] == "[["
+
+
+def test_theorems_and_columns_extensions_validate():
+    for name in ["Theorems", "Columns"]:
+        data = yaml.safe_load((EXT_DIR / f"{name}.yaml").read_text())
+        _validate(data, "extension")
+        assert data["extension"] == name
+
+
+def test_sidebar_theme_resolves_with_divergent_profile():
+    data = yaml.safe_load((ISA_DIR / "Sidebar.yaml").read_text())
+    _validate(data, "theme")
+    provided = {p.split("@")[0] for p in data["provides"]}
+    # Sidebar shares Base+Zsem+OverflowGuard, LACKS SpecialFrames, ADDS Theorems+Columns.
+    assert "SpecialFrames" not in provided
+    assert {"Theorems", "Columns"} <= provided
+    eff = resolve("Sidebar", ISA_DIR)
+    assert "theorem" in eff.allowed_environments     # from Theorems
+    assert "columns" in eff.allowed_environments     # from Columns
+    assert "statementframe" not in eff.allowed_macros  # SpecialFrames absent
+    assert "block" in eff.blocks_requiring_title     # shared Zsem

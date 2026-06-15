@@ -1,0 +1,26 @@
+meta:
+  theme: Sidebar
+  sty: beamerthemeSidebar.sty
+  isa_version: 1
+  engine: xelatex
+  aspectratio: "169"
+# Deliberately divergent from Simple: shares Base+Zsem+OverflowGuard (the portable
+# subset), LACKS SpecialFrames (forces degradation of \statementframe etc.), and
+# ADDS Theorems+Columns. Capacity differs (a sidebar steals horizontal space), so
+# it is measured separately by capacity_probe in this plan.
+provides: [Base@1, Zsem@1, Theorems@1, Columns@1, OverflowGuard@1]
+options:
+  - { name: density, values: ["normal", "dense"], default: "normal" }
+  - { name: overflowguard, values: ["on", "off"], default: "off", required_value: "on" }
+capacity:
+  normal: { bullets_per_frame: 5, figure_plus_bullets: 2, blocks_per_frame: 1 }
+  dense:  { bullets_per_frame: 7, figure_plus_bullets: 3, blocks_per_frame: 2 }
+  measured_at: { bullet_words: 8, provisional: true }
+custom_instructions: []
+structural_idioms:
+  - { rule: deck_requires_short_title, severity: error }
+  - { rule: block_requires_title, severity: error }
+prose: |
+  A persistent left sidebar carries the section outline; content lives in the
+  narrower right column, so frames hold less than Simple. Prefer theorem/
+  definition environments for formal statements; use columns for comparisons.

@@ -1,0 +1,12 @@
+extension: Theorems
+version: 1
+# Math-talk structures. Standard amsthm-style environments the theme styles.
+instructions: []
+environments:
+  - { env: theorem, args: 0, optional_args: 1 }
+  - { env: definition, args: 0, optional_args: 1 }
+  - { env: proof, args: 0, optional_args: 1 }
+lowering:
+  theorem: "a block titled 'Theorem'"
+  definition: "a block titled 'Definition'"
+  proof: "a paragraph prefixed with \\textit{Proof.}"

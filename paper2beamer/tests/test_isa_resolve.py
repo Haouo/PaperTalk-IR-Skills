@@ -125,3 +125,10 @@ def test_madrid_real_theme_resolves_with_divergent_profile():
     assert "columns" in eff.allowed_environments
     assert "statementframe" not in eff.allowed_macros   # SpecialFrames absent
     assert "block" in eff.blocks_requiring_title        # shared Zsem
+
+
+def test_resolve_collects_lowering_from_extensions():
+    eff = resolve("Simple", ISA_DIR)
+    # SpecialFrames declares how statementframe lowers to a Base equivalent.
+    assert "statementframe" in eff.lowering
+    assert eff.lowering["statementframe"]

@@ -30,6 +30,7 @@ class EffectiveISA:
     options: dict  # name -> option record
     structural_idioms: tuple = ()
     capacity: dict = field(default_factory=dict)
+    lowering: dict = field(default_factory=dict)
     prose: str = ""
 
 
@@ -72,11 +73,13 @@ def resolve(theme: str, isa_dir) -> EffectiveISA:
     macro_argspecs: dict = {}
     env_argspecs: dict = {}
     blocks_requiring_title: set = set()
+    lowering: dict = {}
 
     for token in theme_data["provides"]:
         name = token.split("@")[0]
         ext = _load_yaml(isa_dir / "extensions" / f"{name}.yaml")
         _validate(ext, schema, "extension")
+        lowering.update(ext.get("lowering", {}))
         for instr in ext.get("instructions", []):
             macros.add(instr["cmd"])
             macro_argspecs[instr["cmd"]] = _argspec(instr)
@@ -104,5 +107,6 @@ def resolve(theme: str, isa_dir) -> EffectiveISA:
         options=options,
         structural_idioms=tuple(theme_data.get("structural_idioms", [])),
         capacity=theme_data.get("capacity", {}),
+        lowering=lowering,
         prose=theme_data.get("prose", ""),
     )

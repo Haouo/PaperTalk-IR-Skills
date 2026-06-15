@@ -57,3 +57,45 @@ def test_clean_build_within_budget_yields_no_directives():
     sig = Signals(compile_ok=True, page_count=15)
     out = route(sig, PROV, budget=IntentBudget(min_pages=12, max_pages=18), attempts={})
     assert out == ()
+
+
+from scripts.latex_log import Violation
+
+
+def test_undeclared_instruction_violation_routes_to_tex_level():
+    sig = Signals(
+        compile_ok=False,
+        violations=(Violation("S07", "undeclared_instruction", "\\foo", "error"),),
+    )
+    out = route(sig, PROV, budget=None, attempts={})
+    assert out[0].level == "tex"
+    assert out[0].target_id == "S07"
+
+
+def test_block_without_title_routes_to_slide_level():
+    sig = Signals(
+        compile_ok=False,
+        violations=(Violation("S08", "block_without_title", "block", "error"),),
+    )
+    out = route(sig, PROV, budget=None, attempts={})
+    assert out[0].level == "slide"
+    assert out[0].target_id == "S08"
+
+
+def test_bad_option_violation_routes_to_preamble_tex():
+    sig = Signals(
+        compile_ok=False,
+        violations=(Violation(None, "bad_option", "overflowguard must be on", "error"),),
+    )
+    out = route(sig, PROV, budget=None, attempts={})
+    assert out[0].level == "tex"
+    assert out[0].target_id == "preamble"
+
+
+def test_warn_severity_violation_is_not_routed():
+    sig = Signals(
+        compile_ok=True,
+        violations=(Violation("S07", "section_too_long", "...", "warn"),),
+    )
+    out = route(sig, PROV, budget=None, attempts={})
+    assert out == ()

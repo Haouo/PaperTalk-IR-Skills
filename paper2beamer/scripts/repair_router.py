@@ -92,6 +92,23 @@ def route(
             )
         )
 
+    # 1b. ISA conformance violations (static, pre-build). Only errors route;
+    #     warns are reported elsewhere. Mirrors compile->tex / overflow->slide.
+    _VIOLATION_LEVEL = {
+        "undeclared_instruction": "tex",
+        "bad_option": "tex",
+        "bad_aspectratio": "tex",
+        "block_without_title": "slide",
+    }
+    for v in sig.violations:
+        if v.severity != "error":
+            continue
+        level = _VIOLATION_LEVEL.get(v.kind, "tex")
+        target = v.slide_id if v.slide_id is not None else "preamble"
+        directives.append(
+            RepairDirective(level=level, target_id=target, reason=v.detail)
+        )
+
     # 2. Overflow -> trim that slide; escalate to Narrative after repeated tries.
     for ov in sig.overflows:
         frame = prov.frame_by_content_number(ov.slide_number)

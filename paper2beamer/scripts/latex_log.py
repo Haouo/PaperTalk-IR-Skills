@@ -102,6 +102,11 @@ def _extract_errors(text: str) -> list[CompileError]:
     errors: list[CompileError] = []
     for match in _ERR_LINE.finditer(text):
         message = match.group(1).strip()
+        # The overflow guard raises a PackageError; it is captured as an Overflow,
+        # so do not also count it as a generic compile error (which would route the
+        # same failure to the tex level as well as the slide level).
+        if "Frame body overflows the safe area" in message:
+            continue
         # Search only the slice AFTER this error for its line marker, so two
         # errors never steal each other's line numbers.
         tail = text[match.end():]

@@ -59,3 +59,14 @@ def test_overflow_guard_message_parses_even_when_log_wraps_the_slide_number():
     )
     sig = parse_log(wrapped, exit_code=12)
     assert any(o.slide_number == 1 for o in sig.overflows)
+
+
+def test_overflow_guard_error_is_not_also_a_compile_error():
+    log = (
+        "! Package beamerthemeSimple Error: Frame body overflows the safe area on slide \n"
+        "3: content is 400pt tall but only 235pt fits.\n"
+        "l.20 \\end{frame}\n"
+    )
+    sig = parse_log(log, exit_code=12)
+    assert any(o.slide_number == 3 for o in sig.overflows)
+    assert sig.errors == ()   # must not double-count as a compile error

@@ -35,3 +35,22 @@ def test_base_allowlist_loads_and_includes_core_primitives():
     assert "textbf" in data["allowed_macros"]
     assert "item" in data["allowed_macros"]
     assert "itemize" in data["allowed_environments"]
+
+
+EXT_DIR = ISA_DIR / "extensions"
+EXPECTED_EXTS = ["Base", "Zsem", "SpecialFrames", "Density", "OverflowGuard"]
+
+
+def test_all_standard_extensions_validate_against_schema():
+    schema = _schema()["$defs"]["extension"]
+    for name in EXPECTED_EXTS:
+        data = yaml.safe_load((EXT_DIR / f"{name}.yaml").read_text())
+        jsonschema.validate(data, schema)
+        assert data["extension"] == name
+
+
+def test_specialframes_declares_statementframe_and_its_lowering():
+    data = yaml.safe_load((EXT_DIR / "SpecialFrames.yaml").read_text())
+    cmds = [i["cmd"] for i in data["instructions"]]
+    assert "statementframe" in cmds
+    assert "statementframe" in data["lowering"]

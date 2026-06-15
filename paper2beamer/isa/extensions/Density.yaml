@@ -1,0 +1,5 @@
+extension: Density
+version: 1
+# Adds the density option; affects capacity, not the instruction surface.
+instructions: []
+lowering: {}

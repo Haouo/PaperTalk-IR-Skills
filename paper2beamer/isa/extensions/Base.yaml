@@ -1,0 +1,17 @@
+extension: Base
+version: 1
+# Mandatory ISA every theme inherits. The document shell + the core frame model.
+instructions:
+  - { cmd: documentclass, args: 1 }
+  - { cmd: usetheme, args: 1 }
+  - { cmd: title, args: 1 }
+  - { cmd: author, args: 1 }
+  - { cmd: institute, args: 1 }
+  - { cmd: date, args: 1 }
+  - { cmd: maketitle, args: 0 }
+  - { cmd: section, args: 1 }
+  - { cmd: tableofcontents, args: 0 }
+environments:
+  - { env: frame }
+  - { env: document }
+lowering: {}

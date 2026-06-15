@@ -7,10 +7,19 @@
       "required": ["cmd"],
       "properties": {
         "cmd": {"type": "string"},
+        "args": {"type": "integer", "minimum": 0},
+        "optional_args": {"type": "integer", "minimum": 0},
+        "numbered": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "required": ["env"],
+      "properties": {
         "env": {"type": "string"},
         "args": {"type": "integer", "minimum": 0},
         "optional_args": {"type": "integer", "minimum": 0},
-        "numbered": {"type": "boolean"},
         "requires_title": {"type": "boolean"}
       },
       "additionalProperties": false
@@ -22,7 +31,7 @@
         "extension": {"type": "string"},
         "version": {"type": "integer", "minimum": 1},
         "instructions": {"type": "array", "items": {"$ref": "#/$defs/instruction"}},
-        "environments": {"type": "array", "items": {"$ref": "#/$defs/instruction"}},
+        "environments": {"type": "array", "items": {"$ref": "#/$defs/environment"}},
         "lowering": {"type": "object"}
       },
       "additionalProperties": false

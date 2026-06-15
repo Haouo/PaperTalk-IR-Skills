@@ -63,3 +63,11 @@ def test_specialframes_declares_statementframe_and_its_lowering():
     cmds = [i["cmd"] for i in data["instructions"]]
     assert "statementframe" in cmds
     assert "statementframe" in data["lowering"]
+
+
+def test_simple_theme_validates_and_declares_expected_extensions():
+    data = yaml.safe_load((ISA_DIR / "Simple.yaml").read_text())
+    _validate(data, "theme")
+    provided = {p.split("@")[0] for p in data["provides"]}
+    assert provided == {"Base", "Zsem", "SpecialFrames", "Density", "OverflowGuard"}
+    assert data["meta"]["aspectratio"] == "169"

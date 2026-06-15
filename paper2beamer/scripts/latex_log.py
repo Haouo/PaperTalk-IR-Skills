@@ -32,12 +32,28 @@ class Overflow:
 
 
 @dataclass(frozen=True)
+class Violation:
+    """One ISA-conformance violation found by the static linter (pre-build).
+
+    slide_id is the frame the violation belongs to, or None for a preamble /
+    deck-global issue. kind is a stable tag the router branches on. severity is
+    "error" (routes to repair) or "warn" (reported, non-blocking).
+    """
+
+    slide_id: Optional[str]
+    kind: str
+    detail: str
+    severity: str
+
+
+@dataclass(frozen=True)
 class Signals:
     """Everything the repair router needs to know about one build."""
 
     compile_ok: bool
     errors: tuple[CompileError, ...] = ()
     overflows: tuple[Overflow, ...] = ()
+    violations: tuple["Violation", ...] = ()
     page_count: Optional[int] = None
 
 

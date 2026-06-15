@@ -33,3 +33,18 @@ def test_overflow_log_captures_slide_number():
 def test_parse_log_rejects_non_string_input():
     with pytest.raises(TypeError):
         parse_log(None, exit_code=0)  # defensive: bad input fails fast
+
+
+from scripts.latex_log import Signals, Violation
+
+
+def test_signals_defaults_to_no_violations():
+    sig = Signals(compile_ok=True)
+    assert sig.violations == ()
+
+
+def test_violation_record_is_frozen_and_carries_fields():
+    v = Violation(slide_id="S03", kind="undeclared_instruction",
+                  detail="\\fancybox not in ISA", severity="error")
+    assert v.slide_id == "S03"
+    assert v.severity == "error"

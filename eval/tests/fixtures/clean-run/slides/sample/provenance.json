@@ -1,0 +1,7 @@
+{
+  "frames": [
+    {"slide_id": "S00", "beat_id": "N00", "content_number": null, "tex_start": 4, "tex_end": 6},
+    {"slide_id": "S01", "beat_id": "N01", "content_number": 1, "tex_start": 8, "tex_end": 10},
+    {"slide_id": "S02", "beat_id": "N02", "content_number": 2, "tex_start": 12, "tex_end": 14}
+  ]
+}

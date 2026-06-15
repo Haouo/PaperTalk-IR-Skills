@@ -62,6 +62,16 @@ Run them locally before a release.
 4. **Theme swap.** Add a second theme + its ISA via ISA setup, re-emit the same
    deck, and confirm it targets the new theme with the Narrative IR unchanged.
 
+## 4. Quality — eval harness (local / pre-release)
+
+The acceptance criteria below are also automated by the **eval harness**
+(`eval/`), which runs paper2beamer end-to-end on a committed golden-IR fixture
+(the Docling extraction of *Attention Is All You Need*; no PDF in the repo),
+grades the structural criteria with `eval/grade_structural.py`, and adds an
+LLM-judged quality score (faithfulness, narrative, clarity, intent fit). See
+[`eval/README.md`](../eval/README.md). The grader is unit-tested in CI; a full
+run needs the model and is local-only, like the manual checks above.
+
 ## Acceptance criteria (mapped to the design)
 
 - [ ] The deck **compiles** to a PDF with XeLaTeX.

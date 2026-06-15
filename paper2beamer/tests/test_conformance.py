@@ -48,3 +48,22 @@ def test_missing_overflowguard_on_is_an_error():
     preamble = "\\usetheme[density=normal]{Simple}"  # overflowguard not set to on
     out = check(EFF, frames={}, preamble=preamble)
     assert any(v.kind == "bad_option" and "overflowguard" in v.detail for v in out)
+
+
+from scripts.latex_log import Signals
+from scripts.repair_router import Provenance, route
+
+
+def test_illegal_instruction_lints_then_routes_to_its_frame():
+    # A frame that uses an undeclared macro.
+    frames = {"S05": "\\begin{frame}{T}\\fancybox{x}\\end{frame}"}
+    violations = check(EFF, frames=frames, preamble="")
+    assert violations, "expected at least one violation"
+
+    sig = Signals(compile_ok=False, violations=violations)
+    prov = Provenance(frames=(
+        {"slide_id": "S05", "beat_id": "N02", "content_number": 5,
+         "tex_start": 1, "tex_end": 3},
+    ))
+    directives = route(sig, prov, budget=None, attempts={})
+    assert any(d.level == "tex" and d.target_id == "S05" for d in directives)

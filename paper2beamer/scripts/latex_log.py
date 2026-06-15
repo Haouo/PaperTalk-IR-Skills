@@ -64,7 +64,7 @@ _ERR_LINE = re.compile(r"^! (.+)$", re.MULTILINE)
 # TeX reports the offending source line as "l.<n> ...".
 _TEX_LINE = re.compile(r"^l\.(\d+)", re.MULTILINE)
 # The Simple theme's overflowguard error names the slide precisely.
-_OVERFLOW_GUARD = re.compile(r"Frame body overflows the safe area on slide (\d+)")
+_OVERFLOW_GUARD = re.compile(r"Frame body overflows the safe area on slide\s+(\d+)")
 # Generic fallback when the theme has no overflowguard option.
 _OVERFULL_VBOX = re.compile(r"Overfull \\vbox \(([\d.]+pt) too high\)")
 # Final page count, written once per pdf output ("... (N pages, ...").

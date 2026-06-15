@@ -13,9 +13,9 @@ options:
 # Provisional capacity carried from the prose ISA; OVERWRITTEN by capacity_probe
 # in Plan 2. Numbers are planning hints; the overflow guard is the hard gate.
 capacity:
-  normal: { bullets_per_frame: 7, figure_plus_bullets: 3, blocks_per_frame: 2 }
-  dense:  { bullets_per_frame: 9, figure_plus_bullets: 4, blocks_per_frame: 3 }
-  measured_at: { bullet_words: 8, provisional: true }
+  normal: { bullets_per_frame: 11, figure_plus_bullets: 4, blocks_per_frame: 3 }
+  dense:  { bullets_per_frame: 11, figure_plus_bullets: 4, blocks_per_frame: 3 }
+  measured_at: { bullet_words: 8 }
 custom_instructions: []
 structural_idioms:
   - { rule: deck_requires_short_title, severity: error }

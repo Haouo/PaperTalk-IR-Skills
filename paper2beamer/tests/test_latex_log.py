@@ -48,3 +48,14 @@ def test_violation_record_is_frozen_and_carries_fields():
                   detail="\\fancybox not in ISA", severity="error")
     assert v.slide_id == "S03"
     assert v.severity == "error"
+
+
+def test_overflow_guard_message_parses_even_when_log_wraps_the_slide_number():
+    # LaTeX wraps log lines at ~79 cols, so the slide number can land on the
+    # next line. The parser must still recover it.
+    wrapped = (
+        "! Package beamerthemeSimple Error: Frame body overflows the safe area on slide \n"
+        "1: content is 707.25pt tall but only 234.98pt fits.\n"
+    )
+    sig = parse_log(wrapped, exit_code=12)
+    assert any(o.slide_number == 1 for o in sig.overflows)

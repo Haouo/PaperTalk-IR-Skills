@@ -13,9 +13,9 @@ options:
   - { name: density, values: ["normal", "dense"], default: "normal" }
   - { name: overflowguard, values: ["on", "off"], default: "off", required_value: "on" }
 capacity:
-  normal: { bullets_per_frame: 5, figure_plus_bullets: 2, blocks_per_frame: 1 }
-  dense:  { bullets_per_frame: 7, figure_plus_bullets: 3, blocks_per_frame: 2 }
-  measured_at: { bullet_words: 8, provisional: true }
+  normal: { bullets_per_frame: 13, figure_plus_bullets: 5, blocks_per_frame: 5 }
+  dense:  { bullets_per_frame: 13, figure_plus_bullets: 5, blocks_per_frame: 5 }
+  measured_at: { bullet_words: 8 }
 custom_instructions: []
 structural_idioms:
   - { rule: deck_requires_short_title, severity: error }

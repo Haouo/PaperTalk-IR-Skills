@@ -14,6 +14,12 @@ Domain-agnostic: researchers in any field can use it.
 
 ## How it works
 
+![paper2beamer overall architecture — an LLVM-style pipeline from paper PDF to Beamer deck](assets/overall-arch.png)
+
+The pipeline reads left to right; the theme-as-ISA layer and the IR lowering chain
+sit beneath it, and the evaluation harness sits off to the right. A compact text
+version of the same flow:
+
 ```
 [Intent]  ->  [Docling ingest]  ->  Narrative IR  ==GATE==>  Slide IR  ->  .tex  ->  [xelatex]  ->  repair
                  (figures)          (the story)    (review)   (per slide)  (assemble)   (PDF)      (right level)
@@ -24,6 +30,13 @@ theme-as-ISA layer. One human review gate, right after the Narrative IR, where a
 wrong story is cheapest to fix. Everything after the gate runs automatically,
 including the repair loop. See [docs/design-philosophy.md](docs/design-philosophy.md)
 and [docs/ir-and-isa.md](docs/ir-and-isa.md) for the full rationale.
+
+<details>
+<summary>Detailed architecture — stages, artifacts, provenance, and repair routing</summary>
+
+![paper2beamer detailed architecture — per-stage inputs and outputs, the deterministic scripts, the provenance ID chain (N-ids to S-ids to .tex line ranges), the repair loop, the ISA contract, and the evaluation harness](assets/detailed-arch.png)
+
+</details>
 
 ## Requirements
 

@@ -1,0 +1,28 @@
+meta:
+  theme: Simple
+  sty: beamerthemeSimple.sty
+  isa_version: 1
+  engine: xelatex
+  aspectratio: "169"
+provides: [Base@1, Zsem@1, SpecialFrames@1, Density@1, OverflowGuard@1]
+options:
+  - { name: eyebrow, type: freetext }
+  - { name: density, values: [normal, dense], default: normal }
+  - { name: divider, values: ["on", "off"], default: "on" }
+  - { name: overflowguard, values: ["on", "off"], default: "off", required_value: "on" }
+# Provisional capacity carried from the prose ISA; OVERWRITTEN by capacity_probe
+# in Plan 2. Numbers are planning hints; the overflow guard is the hard gate.
+capacity:
+  normal: { bullets_per_frame: 11, figure_plus_bullets: 4, blocks_per_frame: 3 }
+  dense:  { bullets_per_frame: 11, figure_plus_bullets: 4, blocks_per_frame: 3 }
+  measured_at: { bullet_words: 8 }
+custom_instructions: []
+structural_idioms:
+  - { rule: deck_requires_short_title, severity: error }
+  - { rule: block_requires_title, severity: error }
+  - { rule: section_name_max_chars, value: 40, severity: warn }
+prose: |
+  Mark meaning with colour and the semantic block, not decoration or filled
+  headers. Accent = structure, gold = caveat, green = example. Keep section names
+  short; give every block a title; give every deck a short title. One idea per
+  statementframe.

@@ -1,0 +1,14 @@
+extension: Zsem
+version: 1
+# Semantic blocks coloured by meaning, plus the matching inline emphasis.
+instructions:
+  - { cmd: alert, args: 1 }
+environments:
+  - { env: block, args: 1, requires_title: true }
+  - { env: alertblock, args: 1, requires_title: true }
+  - { env: exampleblock, args: 1, requires_title: true }
+lowering:
+  block: "itemize/paragraph with a bold lead-in instead of a coloured block"
+  alertblock: "paragraph prefixed with \\textbf{Caveat:}"
+  exampleblock: "paragraph prefixed with \\textbf{Example:}"
+  alert: "textbf"

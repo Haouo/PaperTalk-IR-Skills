@@ -1,42 +1,61 @@
-# Optional setup: build a theme's ISA
+# Optional setup: author a theme's ISA
 
-**Optional, once per theme.** This is "building a backend for a new target": read
-a user-supplied Beamer theme and distil its public API into an ISA manifest the
-Slide IR and emission passes can obey. The bundled Simple theme already ships
-with `paper2beamer/isa/Simple.md`, so you only run this for OTHER themes.
+**Optional, once per theme.** This is "building a backend for a new target":
+describe a Beamer theme's public API as a machine-readable ISA Set the Slide IR
+and emission obey and the conformance linter verifies. The bundled `Simple` theme
+and the stock `Madrid` theme already ship with their Sets under
+`paper2beamer/isa/`, so you only do this for OTHER themes.
 
 ## Input
 
-- a theme package `beamerthemeXxx.sty` (required), and its manual if one exists.
+- a theme package `beamerthemeXxx.sty` (or a stock theme that ships with Beamer,
+  e.g. Madrid), and its manual if one exists.
 
 ## Produce
 
-Write `isa/<Theme>.md` (workspace root `isa/`, not the shipped
-`paper2beamer/isa/`) in the SAME four-section structure as
-`paper2beamer/isa/Simple.md`:
+Write `isa/<Theme>.yaml` (workspace root `isa/`, not the shipped
+`paper2beamer/isa/`), validated against `isa/isa.schema.json`. It declares the
+**extensions the theme provides** rather than re-listing every instruction:
 
-1. **Instructions** — special frames, semantic block environments, inline
-   emphasis, semantic colors, the document shell, and which standard Beamer
-   constructs work.
-2. **Options** — what `\usetheme[...]` accepts, and how to override colors.
-3. **Constraints** — aspect ratio, engine/font requirements, rough per-frame
-   capacity, frame-numbering behaviour, and forbidden zones (packages the theme
-   deliberately leaves to the deck).
-4. **Idioms** — the theme's style contract.
+```yaml
+meta: { theme: Xxx, sty: beamerthemeXxx.sty, isa_version: 1,
+        engine: xelatex, aspectratio: "169" }
+provides: [Base@1, Zsem@1, ...]      # which standard extensions this theme implements
+options: [ ... ]                     # \usetheme[...] options, with allowed values
+capacity: { ... }                    # filled by the capacity probe (do not hand-set)
+custom_instructions: [ ... ]         # theme-specific commands not in any extension
+structural_idioms: [ ... ]           # checkable rules, e.g. block_requires_title
+prose: |                             # advisory, judgement-only idioms
+  ...
+```
+
+Standard extensions live in `isa/extensions/*.yaml` (`Base`, `Zsem`,
+`SpecialFrames`, `Theorems`, `Columns`, `OverflowGuard`); reuse them, and only add
+`custom_instructions` for what no extension covers.
 
 ## How
 
-- If a manual exists, prefer it; it is the human-readable ISA already.
-- Otherwise, read the `.sty` source: `\DeclareOption*`/`\DeclareOptionBeamer` for
-  options, `\newcommand`/`\NewDocumentCommand` for special frames,
-  `\setbeamercolor`/`\providecolor` for the semantic palette,
-  `\setbeamertemplate` for structure.
-- **Overflow detection**: note whether the theme has an `overflowguard`-style
-  option. If it does, the build should enable it. If it does NOT, overflow
-  detection falls back to generic `Overfull \vbox` warnings (the log parser
-  already handles both) — record this in the ISA's Constraints section so the
-  Slide IR budgets capacity more conservatively.
+1. **Map the theme to extensions.** Read the manual (preferred) or the `.sty`:
+   `\DeclareOptionBeamer` for options, `\newcommand`/`\NewDocumentCommand` for
+   custom frames, `\setbeamercolor`/`\providecolor` for the semantic palette,
+   `\setbeamertemplate` for structure. Decide which standard extensions the theme
+   actually supports (e.g. does it provide our special frames? theorem styles?
+   columns?). Anything bespoke goes in `custom_instructions` with its
+   `lowering` (how to emulate it on a theme that lacks it).
+2. **Overflow guard.** `overflowguard` is a paper2beamer-specific capability, NOT
+   a standard Beamer feature. List `OverflowGuard` in `provides:` only if the
+   theme actually implements that option. If it does not (most third-party
+   themes), omit it; capacity then falls back to LaTeX's `Overfull \vbox`
+   warning, which the log parser already handles.
+3. **Measure capacity — do not guess.** Run the probe:
+   `uv run python -m scripts.capacity_probe --theme <Theme>` and paste the printed
+   `capacity:` block into the Set. The probe is ISA-options-aware: it enables the
+   guard only if the theme provides `OverflowGuard`, and probes the `dense`
+   density only if the theme declares a `density` option.
 
-## Confirm
+## Verify
 
-Show the resulting ISA to the user and confirm it before using it for a deck.
+- `uv run python -c "from scripts.isa_resolve import resolve; from pathlib import Path; print(resolve('<Theme>', Path('isa')).allowed_macros)"`
+  resolves without a schema error.
+- Smoke-compile a minimal deck with `\usetheme{<Theme>}` through `scripts/build.sh`.
+- Show the resulting Set to the user and confirm it before using it for a deck.

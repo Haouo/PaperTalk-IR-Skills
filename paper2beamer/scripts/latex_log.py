@@ -32,12 +32,28 @@ class Overflow:
 
 
 @dataclass(frozen=True)
+class Violation:
+    """One ISA-conformance violation found by the static linter (pre-build).
+
+    slide_id is the frame the violation belongs to, or None for a preamble /
+    deck-global issue. kind is a stable tag the router branches on. severity is
+    "error" (routes to repair) or "warn" (reported, non-blocking).
+    """
+
+    slide_id: Optional[str]
+    kind: str
+    detail: str
+    severity: str
+
+
+@dataclass(frozen=True)
 class Signals:
     """Everything the repair router needs to know about one build."""
 
     compile_ok: bool
     errors: tuple[CompileError, ...] = ()
     overflows: tuple[Overflow, ...] = ()
+    violations: tuple["Violation", ...] = ()
     page_count: Optional[int] = None
 
 
@@ -48,7 +64,7 @@ _ERR_LINE = re.compile(r"^! (.+)$", re.MULTILINE)
 # TeX reports the offending source line as "l.<n> ...".
 _TEX_LINE = re.compile(r"^l\.(\d+)", re.MULTILINE)
 # The Simple theme's overflowguard error names the slide precisely.
-_OVERFLOW_GUARD = re.compile(r"Frame body overflows the safe area on slide (\d+)")
+_OVERFLOW_GUARD = re.compile(r"Frame body overflows the safe area on slide\s+(\d+)")
 # Generic fallback when the theme has no overflowguard option.
 _OVERFULL_VBOX = re.compile(r"Overfull \\vbox \(([\d.]+pt) too high\)")
 # Final page count, written once per pdf output ("... (N pages, ...").
@@ -86,6 +102,11 @@ def _extract_errors(text: str) -> list[CompileError]:
     errors: list[CompileError] = []
     for match in _ERR_LINE.finditer(text):
         message = match.group(1).strip()
+        # The overflow guard raises a PackageError; it is captured as an Overflow,
+        # so do not also count it as a generic compile error (which would route the
+        # same failure to the tex level as well as the slide level).
+        if "Frame body overflows the safe area" in message:
+            continue
         # Search only the slice AFTER this error for its line marker, so two
         # errors never steal each other's line numbers.
         tail = text[match.end():]

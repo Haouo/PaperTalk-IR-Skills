@@ -31,7 +31,7 @@ the Narrative IR; everything after runs automatically including the repair loop.
 
 - **Narrative IR is target- and domain-independent.** It never reads the ISA.
   Only the Slide IR and emission passes consult the ISA.
-- **The ISA is per theme.** Swapping a theme = swapping `isa/<Theme>.md` and the
+- **The ISA is per theme.** Swapping a theme = swapping `isa/<Theme>.yaml` and the
   workspace `theme.tex`; the Narrative IR is reused unchanged.
 - **Figures are deterministic.** They come only from Docling's output; never
   invent or hallucinate a figure.

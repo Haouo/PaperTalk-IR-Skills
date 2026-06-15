@@ -6,7 +6,9 @@ every choice must be something the active theme actually supports.
 ## Inputs
 
 - the approved `slides/<slug>/narrative.md`
-- the active ISA: `paper2beamer/isa/Simple.md`, or `isa/<Theme>.md` if the
+- the active ISA: the theme's resolved effective contract (composed by
+  `scripts/isa_resolve.py` from `paper2beamer/isa/Simple.yaml`, or
+  `isa/<Theme>.yaml` if the
   workspace selected another theme (see `isa-setup.md`)
 
 ## Output

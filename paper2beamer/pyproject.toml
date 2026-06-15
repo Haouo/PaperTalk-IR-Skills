@@ -3,10 +3,13 @@ name = "paper2beamer"
 version = "0.1.0"
 description = "Deterministic tooling for the paper2beamer skill (ingest, log parsing, deck assembly, repair routing)."
 requires-python = ">=3.11"
-# No hard runtime deps: the log parser, repair router, and deck assembler are
-# pure stdlib. Docling (heavy) lives in the optional 'ingest' group below, so
-# unit tests and CI never pull torch. frontend_docling imports it lazily.
-dependencies = []
+# Contract-core deps: read/validate the structured ISA and parse emitted LaTeX.
+# All pure-Python, no model downloads (unlike the optional 'ingest' group).
+dependencies = [
+    "pyyaml>=6",
+    "jsonschema>=4",
+    "pylatexenc>=2.10,<3",
+]
 
 [dependency-groups]
 dev = [

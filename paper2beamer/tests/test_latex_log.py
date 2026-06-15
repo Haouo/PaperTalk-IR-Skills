@@ -33,3 +33,40 @@ def test_overflow_log_captures_slide_number():
 def test_parse_log_rejects_non_string_input():
     with pytest.raises(TypeError):
         parse_log(None, exit_code=0)  # defensive: bad input fails fast
+
+
+from scripts.latex_log import Signals, Violation
+
+
+def test_signals_defaults_to_no_violations():
+    sig = Signals(compile_ok=True)
+    assert sig.violations == ()
+
+
+def test_violation_record_is_frozen_and_carries_fields():
+    v = Violation(slide_id="S03", kind="undeclared_instruction",
+                  detail="\\fancybox not in ISA", severity="error")
+    assert v.slide_id == "S03"
+    assert v.severity == "error"
+
+
+def test_overflow_guard_message_parses_even_when_log_wraps_the_slide_number():
+    # LaTeX wraps log lines at ~79 cols, so the slide number can land on the
+    # next line. The parser must still recover it.
+    wrapped = (
+        "! Package beamerthemeSimple Error: Frame body overflows the safe area on slide \n"
+        "1: content is 707.25pt tall but only 234.98pt fits.\n"
+    )
+    sig = parse_log(wrapped, exit_code=12)
+    assert any(o.slide_number == 1 for o in sig.overflows)
+
+
+def test_overflow_guard_error_is_not_also_a_compile_error():
+    log = (
+        "! Package beamerthemeSimple Error: Frame body overflows the safe area on slide \n"
+        "3: content is 400pt tall but only 235pt fits.\n"
+        "l.20 \\end{frame}\n"
+    )
+    sig = parse_log(log, exit_code=12)
+    assert any(o.slide_number == 3 for o in sig.overflows)
+    assert sig.errors == ()   # must not double-count as a compile error

@@ -1,0 +1,7 @@
+extension: OverflowGuard
+version: 1
+# The capability that makes capacity a HARD constraint: a frame reaching the
+# footer becomes a per-slide error. No new instructions; it is an option + build
+# behaviour. A theme without it falls back to Overfull-vbox detection.
+instructions: []
+lowering: {}

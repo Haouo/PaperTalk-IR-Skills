@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "paper2beamer ISA",
+  "$defs": {
+    "instruction": {
+      "type": "object",
+      "required": ["cmd"],
+      "properties": {
+        "cmd": {"type": "string"},
+        "args": {"type": "integer", "minimum": 0},
+        "optional_args": {"type": "integer", "minimum": 0},
+        "numbered": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "required": ["env"],
+      "properties": {
+        "env": {"type": "string"},
+        "args": {"type": "integer", "minimum": 0},
+        "optional_args": {"type": "integer", "minimum": 0},
+        "requires_title": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "extension": {
+      "type": "object",
+      "required": ["extension", "version", "instructions"],
+      "properties": {
+        "extension": {"type": "string"},
+        "version": {"type": "integer", "minimum": 1},
+        "instructions": {"type": "array", "items": {"$ref": "#/$defs/instruction"}},
+        "environments": {"type": "array", "items": {"$ref": "#/$defs/environment"}},
+        "lowering": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "theme": {
+      "type": "object",
+      "required": ["meta", "provides"],
+      "properties": {
+        "meta": {
+          "type": "object",
+          "required": ["theme", "engine", "aspectratio"],
+          "properties": {
+            "theme": {"type": "string"},
+            "sty": {"type": "string"},
+            "isa_version": {"type": "integer"},
+            "engine": {"type": "string"},
+            "aspectratio": {"type": "string"}
+          }
+        },
+        "provides": {"type": "array", "items": {"type": "string"}},
+        "options": {"type": "array"},
+        "capacity": {"type": "object"},
+        "custom_instructions": {"type": "array", "items": {"$ref": "#/$defs/instruction"}},
+        "structural_idioms": {"type": "array"},
+        "prose": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "base_allowlist": {
+      "type": "object",
+      "required": ["allowed_macros", "allowed_environments"],
+      "properties": {
+        "allowed_macros": {"type": "array", "items": {"type": "string"}},
+        "allowed_environments": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

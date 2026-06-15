@@ -1,0 +1,11 @@
+extension: Columns
+version: 1
+# Side-by-side layout. The Beamer columns/column environments.
+instructions:
+  - { cmd: column, args: 1 }
+environments:
+  - { env: columns, args: 0, optional_args: 1 }
+  - { env: column, args: 1 }
+lowering:
+  columns: "stack the column bodies vertically in a single frame"
+  column: "a paragraph break between stacked column bodies"

@@ -40,22 +40,73 @@ metadata that the repair policy depends on.
 
 ## The ISA
 
-A theme's ISA is its capability manifest, expressed in four sections:
+A theme's ISA is its capability contract, expressed as a machine-readable Set
+(`isa/<Theme>.yaml`) that both the model (to generate) and a deterministic
+conformance linter (to verify) consume — a single source of truth, not a prompt.
+It has two parts: a **verifiable contract** (the instructions the theme provides,
+the `\usetheme` options it accepts, its measured capacity, and its
+structurally-checkable idioms such as "every block carries a title") that the
+linter enforces, and a few **advisory idioms** (use colour semantically, keep
+section names short) that stay prose because they need judgement, not a syntactic
+test.
 
-1. **Instructions** — the special frames, semantic block environments, inline
-   emphasis commands, semantic colours, and the document shell the theme
-   provides, together with the standard Beamer constructs known to work with it.
-2. **Options** — the values the theme's `\usetheme[...]` accepts and the
-   sanctioned way to override its colours.
-3. **Constraints** — aspect ratio, engine and font requirements, an approximate
-   per-frame capacity used for layout budgeting, frame-numbering behaviour, and
-   the *forbidden zones*: packages the theme deliberately leaves to the deck.
-4. **Idioms** — the theme's style contract, so emitted slides read as intended
-   rather than merely valid.
+### A modular, extensible instruction set (RISC-V style)
 
-The ISA is the contract between the Slide IR and emission. The Narrative IR never
-consults it. One ISA is authored per theme — the analogue of standing up a
-compiler backend — and the bundled Simple theme ships with its ISA pre-built.
+An ISA is composed, not monolithic. A theme declares the **extensions** it
+`provides:` — a mandatory **Base** (document shell, `frame`, `\section`, lists,
+figures, `\title`) plus standard, versioned extensions and any theme-specific
+custom instructions. Standard extensions in the repo:
+
+- `Zsem` — semantic blocks (`block`/`alertblock`/`exampleblock`) + `\alert`;
+- `SpecialFrames` — `\titleframe`/`\statementframe`/`\thanksframe`;
+- `Theorems` — `theorem`/`definition`/`proof`;
+- `Columns` — `columns`/`column`;
+- `OverflowGuard` — the hard per-slide overflow guard (see below).
+
+The standard/custom split is a **portability contract**, not a question of whether
+stock Beamer ships a feature: a *standard* extension is a named, reusable
+capability any theme may implement, carrying a single declared `lowering:` to a
+Base equivalent; a *custom* instruction is theme-private with no portable
+lowering. A deck that stays within standard extensions degrades gracefully across
+themes; one relying on custom instructions is, by that declaration, not portable
+(a missing custom instruction surfaces as a conformance violation, not a silent
+substitution).
+
+`scripts/isa_resolve.py` composes a theme's **effective ISA** = the union of its
+declared extensions' instructions ∪ its custom instructions ∪ a shared
+base-primitive allowlist (`isa/_base_latex.yaml`). The Set and every extension are
+validated against `isa/isa.schema.json`.
+
+Two properties follow. **Portability:** a deck whose Slide IR uses only
+instructions in an extension subset *E* re-targets to any theme providing ⊇ *E*
+with no narrative edits. **Graceful degradation:** when a target theme lacks an
+extension a deck used, each missing instruction is *lowered* to its declared Base
+equivalent (each extension's `lowering:` block), so a swap to a less capable theme
+still builds, at a reported degradation cost rather than a failure.
+
+### Capacity is measured; the overflow guard is one extension
+
+Per-theme, per-density capacity is **measured** by `scripts/capacity_probe.py`
+(render frames of increasing fill, find where they overflow), not guessed. The
+hard `overflowguard` is a paper2beamer-specific capability modelled as the optional
+`OverflowGuard` extension — **not** a standard Beamer feature. A theme that
+provides it turns overflow into a per-slide build error; a theme without it (e.g.
+the stock third-party Madrid theme) is held only to LaTeX's softer `Overfull
+\vbox` warning, and the probe measures capacity via that fallback.
+
+### Conformance
+
+`scripts/conformance.py` parses each emitted fragment with `pylatexenc` (arg-specs
+generated from the Set) and emits a `Violation` for any undeclared instruction or
+option, any block missing its required title, etc. It runs **before** the build,
+so a contract breach is caught without spending a compile. Violations ride the
+same signal spine as compile errors and overflows (next section).
+
+The ISA is the contract between the Slide IR and emission; the Narrative IR never
+consults it. Authoring an ISA for a new theme means declaring the extensions it
+provides (plus any custom instructions) and running the capacity probe — the
+analogue of standing up a compiler backend. The bundled Simple theme and the stock
+Madrid theme each ship with a resolved ISA.
 
 ## Provenance: the analogue of debug information
 
@@ -89,6 +140,7 @@ following policy:
 
 | Signal | Resolved level | Action |
 |---|---|---|
+| Conformance violation (pre-build) | `tex` / `slide` / preamble | Re-emit the implicated fragment (undeclared instruction → `tex`; missing block title → `slide`; bad option → preamble). |
 | Compile error | `tex` | Re-emit only the implicated frame's fragment. |
 | Frame overflow | `slide` | Revise the implicated slide; re-emit its fragment. |
 | Page count outside budget | `narrative` | Cut/merge (over) or expand (under) beats; re-plan affected slides. |

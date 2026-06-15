@@ -1,0 +1,11 @@
+extension: SpecialFrames
+version: 1
+# On-theme structural frames. Unnumbered (do not count toward the footer total).
+instructions:
+  - { cmd: titleframe, args: 0, numbered: false }
+  - { cmd: statementframe, args: 1, numbered: false }
+  - { cmd: thanksframe, optional_args: 2, numbered: false }
+lowering:
+  titleframe: "a plain frame containing \\maketitle"
+  statementframe: "a plain frame with one large centered line"
+  thanksframe: "a plain frame with a centered 'Thank you' and optional subtitle"

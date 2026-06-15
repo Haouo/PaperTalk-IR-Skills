@@ -4,9 +4,9 @@ version: 1
 instructions:
   - { cmd: alert, args: 1 }
 environments:
-  - { env: block, requires_title: true }
-  - { env: alertblock, requires_title: true }
-  - { env: exampleblock, requires_title: true }
+  - { env: block, args: 1, requires_title: true }
+  - { env: alertblock, args: 1, requires_title: true }
+  - { env: exampleblock, args: 1, requires_title: true }
 lowering:
   block: "itemize/paragraph with a bold lead-in instead of a coloured block"
   alertblock: "paragraph prefixed with \\textbf{Caveat:}"

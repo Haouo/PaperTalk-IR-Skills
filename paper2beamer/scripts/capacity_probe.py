@@ -30,18 +30,24 @@ _ISA_DIR = _REPO / "paper2beamer" / "isa"
 _BULLET = r"\item Representative bullet of roughly eight words here."
 
 
-def _has_overflowguard(theme: str, isa_dir: Path) -> bool:
+def _theme_caps(theme: str, isa_dir) -> tuple:
+    """Return (has_density_option, provides_overflowguard) from the theme's Set."""
     data = yaml.safe_load((Path(isa_dir) / f"{theme}.yaml").read_text())
-    return any(p.split("@")[0] == "OverflowGuard" for p in data["provides"])
+    provides = {p.split("@")[0] for p in data["provides"]}
+    optnames = {o["name"] for o in data.get("options", [])}
+    return ("density" in optnames, "OverflowGuard" in provides)
 
 
-def _deck(theme: str, density: str, body: str, has_guard: bool) -> str:
-    opts = f"density={density}"
+def _deck(theme: str, density: str, body: str, has_density: bool, has_guard: bool) -> str:
+    parts = []
+    if has_density:
+        parts.append(f"density={density}")
     if has_guard:
-        opts += ",overflowguard=on"
+        parts.append("overflowguard=on")
+    opt = f"[{','.join(parts)}]" if parts else ""
     return (
         "\\documentclass[aspectratio=169]{beamer}\n"
-        f"\\usetheme[{opts}]{{{theme}}}\n"
+        f"\\usetheme{opt}{{{theme}}}\n"
         "\\title[Probe]{Probe}\\author{}\\date{}\n"
         "\\begin{document}\n"
         "\\begin{frame}{Capacity probe}\n"
@@ -78,10 +84,10 @@ def _fits(theme: str, density: str, body: str, isa_dir=_ISA_DIR) -> bool:
     With the OverflowGuard extension: a guard error (non-zero exit) means overflow.
     Without it: the build succeeds and overflow shows up as an Overfull vbox.
     """
-    has_guard = _has_overflowguard(theme, isa_dir)
+    has_density, has_guard = _theme_caps(theme, isa_dir)
     with tempfile.TemporaryDirectory() as d:
         deck = Path(d)
-        (deck / "main.tex").write_text(_deck(theme, density, body, has_guard))
+        (deck / "main.tex").write_text(_deck(theme, density, body, has_density, has_guard))
         proc = subprocess.run([str(_BUILD), str(deck)], capture_output=True, text=True)
         log = deck / "main.log"
         sig = parse_log(log.read_text(errors="replace") if log.is_file() else "", proc.returncode)
@@ -120,8 +126,10 @@ def measure(theme: str, shape: str, density: str, lo: int = 1, hi: int = 16,
     return best
 
 
-def probe_all(theme: str, densities=("normal", "dense"), isa_dir=_ISA_DIR) -> dict:
-    """Measure every shape at every density; return a capacity dict for the Set."""
+def probe_all(theme: str, isa_dir=_ISA_DIR) -> dict:
+    """Measure every shape at every density the theme supports; return a capacity dict."""
+    has_density, _ = _theme_caps(theme, isa_dir)
+    densities = ("normal", "dense") if has_density else ("normal",)
     out: dict = {}
     for density in densities:
         out[density] = {shape: measure(theme, shape, density, isa_dir=isa_dir)

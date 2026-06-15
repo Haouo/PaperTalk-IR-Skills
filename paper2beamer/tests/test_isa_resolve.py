@@ -110,15 +110,18 @@ def test_theorems_and_columns_extensions_validate():
         assert data["extension"] == name
 
 
-def test_sidebar_theme_resolves_with_divergent_profile():
-    data = yaml.safe_load((ISA_DIR / "Sidebar.yaml").read_text())
+
+def test_madrid_real_theme_resolves_with_divergent_profile():
+    data = yaml.safe_load((ISA_DIR / "Madrid.yaml").read_text())
     _validate(data, "theme")
     provided = {p.split("@")[0] for p in data["provides"]}
-    # Sidebar shares Base+Zsem+OverflowGuard, LACKS SpecialFrames, ADDS Theorems+Columns.
+    # Madrid is external: shares Base+Zsem+Theorems+Columns, but provides NEITHER
+    # our SpecialFrames NOR our invented OverflowGuard.
+    assert {"Base", "Zsem", "Theorems", "Columns"} <= provided
     assert "SpecialFrames" not in provided
-    assert {"Theorems", "Columns"} <= provided
-    eff = resolve("Sidebar", ISA_DIR)
-    assert "theorem" in eff.allowed_environments     # from Theorems
-    assert "columns" in eff.allowed_environments     # from Columns
-    assert "statementframe" not in eff.allowed_macros  # SpecialFrames absent
-    assert "block" in eff.blocks_requiring_title     # shared Zsem
+    assert "OverflowGuard" not in provided
+    eff = resolve("Madrid", ISA_DIR)
+    assert "theorem" in eff.allowed_environments
+    assert "columns" in eff.allowed_environments
+    assert "statementframe" not in eff.allowed_macros   # SpecialFrames absent
+    assert "block" in eff.blocks_requiring_title        # shared Zsem

@@ -1,0 +1,25 @@
+meta:
+  theme: Madrid
+  sty: stock-beamer            # ships with the Beamer distribution (no local .sty)
+  isa_version: 1
+  engine: xelatex
+  aspectratio: "169"
+# A well-known third-party theme, used to validate the "support arbitrary themes"
+# claim and the OverflowGuard fallback. Shares Base+Zsem+Theorems+Columns with our
+# themes, but - being external - provides NEITHER our SpecialFrames extension
+# (\titleframe etc.; a deck using them must degrade to \maketitle / plain frames)
+# NOR our invented OverflowGuard (capacity is enforced only by LaTeX's own
+# Overfull-vbox warning, so capacity here is advisory, measured via that fallback).
+provides: [Base@1, Zsem@1, Theorems@1, Columns@1]
+options: []                    # Madrid exposes no \usetheme options we rely on
+capacity:
+  normal: { bullets_per_frame: 15, figure_plus_bullets: 7, blocks_per_frame: 5 }
+  measured_at: { bullet_words: 8, method: overfull_vbox_fallback }
+custom_instructions: []
+structural_idioms:
+  - { rule: deck_requires_short_title, severity: error }
+  - { rule: block_requires_title, severity: error }
+prose: |
+  Madrid: a blue footline carrying author/title/date and section navigation, with
+  standard coloured-title blocks. Use \maketitle for the title page (no special
+  frames). No hard overflow guard; keep frames comfortably short.

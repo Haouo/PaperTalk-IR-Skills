@@ -1,0 +1,49 @@
+# Theme-independent safe LaTeX/Beamer primitives. The effective allowlist for any
+# theme is (declared extensions) U (custom_instructions) U this set. These cannot
+# be enumerated per theme, so they live here once.
+allowed_macros:
+  - textbf
+  - textit
+  - emph
+  - texttt
+  - underline
+  - item
+  - footnote
+  - label
+  - ref
+  - cite
+  - includegraphics
+  - caption
+  - centering
+  - href
+  - url
+  - "\\"
+  - "&"
+  - hspace
+  - vspace
+  - smallskip
+  - medskip
+  - bigskip
+  - textwidth
+  - linewidth
+  - textcolor
+  - frac
+  - sum
+  - int
+  - alpha
+  - beta
+  - gamma
+  - mathbf
+  - mathit
+allowed_environments:
+  - itemize
+  - enumerate
+  - description
+  - figure
+  - table
+  - tabular
+  - center
+  - equation
+  - align
+  - quote
+  - thebibliography

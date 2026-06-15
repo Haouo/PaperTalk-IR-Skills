@@ -24,3 +24,14 @@ def test_schema_rejects_extension_missing_version():
     except jsonschema.ValidationError:
         raised = True
     assert raised, "extension without 'version' must be rejected"
+
+
+import yaml
+
+
+def test_base_allowlist_loads_and_includes_core_primitives():
+    data = yaml.safe_load((ISA_DIR / "_base_latex.yaml").read_text())
+    jsonschema.validate(data, _schema()["$defs"]["base_allowlist"])
+    assert "textbf" in data["allowed_macros"]
+    assert "item" in data["allowed_macros"]
+    assert "itemize" in data["allowed_environments"]

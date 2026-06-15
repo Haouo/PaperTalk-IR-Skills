@@ -11,6 +11,11 @@
 
 ## 運作方式
 
+![paper2beamer 整體架構 —— 一條 LLVM 風格、從論文 PDF 到 Beamer 投影片的 pipeline](assets/overall-arch.png)
+
+整條 pipeline 由左到右走；底下兩層分別是 theme-as-ISA 和 IR 的逐層下降鏈，評估工具
+（evaluation harness）則放在右側。同一條流程的文字精簡版：
+
 ```
 [Intent]  ->  [Docling 抽取]  ->  Narrative IR  ==關卡==>  Slide IR  ->  .tex  ->  [xelatex]  ->  修復
                   (圖片)          (故事線)      (人工審查)  (逐張規劃)  (組裝)     (PDF)      (對的層級)
@@ -21,6 +26,13 @@
 全自動跑到底，連修復迴圈都不用你管。背後的設計理念可以看
 [docs/design-philosophy.md](docs/design-philosophy.md) 和
 [docs/ir-and-isa.md](docs/ir-and-isa.md)。
+
+<details>
+<summary>細節架構 —— 各階段的輸入輸出、產物、provenance 與修復路由</summary>
+
+![paper2beamer 細節架構 —— 各階段的輸入與輸出、deterministic 腳本、provenance 的 ID 串接（N-ids 到 S-ids 到 .tex 行號區間）、修復迴圈、ISA 契約，以及評估工具](assets/detailed-arch.png)
+
+</details>
 
 ## 需求
 

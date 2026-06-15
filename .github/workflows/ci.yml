@@ -27,17 +27,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install TeX Live (xelatex + latexmk)
+      - name: Install TeX Live (xelatex + beamer + latexmk)
         run: |
           sudo apt-get update
+          # texlive-latex-recommended carries beamer.cls, fontspec, etoolbox,
+          # xparse and iftex; with --no-install-recommends it is NOT pulled in by
+          # texlive-latex-extra, so it must be listed explicitly or the build
+          # fails with "beamer.cls not found". texlive-fonts-recommended gives the
+          # TeX Gyre fonts the Simple theme prefers.
           sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-latex-extra latexmk
+            texlive-latex-recommended texlive-latex-extra texlive-xetex \
+            texlive-fonts-recommended latexmk
       - name: Assemble and build the golden deck
         run: |
           python3 paper2beamer/scripts/emit_beamer.py \
             --manifest paper2beamer/tests/fixtures/golden-deck \
             --out /tmp/golden
           bash paper2beamer/scripts/build.sh /tmp/golden
+      - name: Show the LaTeX log on failure
+        if: failure()
+        run: tail -80 /tmp/golden/main.log || true
       - name: Assert the PDF exists and the log is clean
         run: |
           test -f /tmp/golden/main.pdf

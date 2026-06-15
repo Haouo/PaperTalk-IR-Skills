@@ -63,6 +63,15 @@ custom instructions. Standard extensions in the repo:
 - `Columns` — `columns`/`column`;
 - `OverflowGuard` — the hard per-slide overflow guard (see below).
 
+The standard/custom split is a **portability contract**, not a question of whether
+stock Beamer ships a feature: a *standard* extension is a named, reusable
+capability any theme may implement, carrying a single declared `lowering:` to a
+Base equivalent; a *custom* instruction is theme-private with no portable
+lowering. A deck that stays within standard extensions degrades gracefully across
+themes; one relying on custom instructions is, by that declaration, not portable
+(a missing custom instruction surfaces as a conformance violation, not a silent
+substitution).
+
 `scripts/isa_resolve.py` composes a theme's **effective ISA** = the union of its
 declared extensions' instructions ∪ its custom instructions ∪ a shared
 base-primitive allowlist (`isa/_base_latex.yaml`). The Set and every extension are

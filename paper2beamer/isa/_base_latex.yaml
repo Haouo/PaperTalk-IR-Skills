@@ -90,6 +90,22 @@ allowed_macros:
 - lambda
 - mu
 - pi
+- ' '
+- ','
+- ;
+- ':'
+- '!'
+- '%'
+- '#'
+- _
+- $
+- '{'
+- '}'
+- '@'
+- textheight
+- paperwidth
+- paperheight
+- columnwidth
 allowed_environments:
 - itemize
 - enumerate

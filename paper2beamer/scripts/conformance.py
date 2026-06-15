@@ -116,3 +116,32 @@ def check(eff: EffectiveISA, frames: dict, preamble: str = "") -> tuple:
     if preamble:
         _check_preamble(eff, preamble, out)
     return tuple(out)
+
+
+def instructions_used(eff: EffectiveISA, frames: dict) -> set:
+    """Collect the macro and environment names a deck's fragments actually use.
+
+    Reuses the ISA-aware parser so declared custom commands parse correctly. Used
+    by the theme-swap harness to decide which instructions would need lowering.
+    """
+    names: set = set()
+    db = _context(eff)
+    for text in frames.values():
+        nodelist, _, _ = LatexWalker(text, latex_context=db).get_latex_nodes()
+        _collect_names(nodelist, names)
+    return names
+
+
+def _collect_names(nodes, names: set) -> None:
+    for node in nodes:
+        if isinstance(node, LatexMacroNode) and node.macroname:
+            names.add(node.macroname)
+        elif isinstance(node, LatexEnvironmentNode):
+            names.add(node.environmentname)
+            if node.nodelist:
+                _collect_names(node.nodelist, names)
+        if isinstance(node, LatexGroupNode) and node.nodelist:
+            _collect_names(node.nodelist, names)
+        nested = getattr(node, "nodeargd", None)
+        if nested is not None and nested.argnlist:
+            _collect_names([a for a in nested.argnlist if a is not None], names)

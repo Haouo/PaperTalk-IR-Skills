@@ -22,13 +22,13 @@ pluggable theme. Read `references/pipeline-overview.md` first for the big pictur
   user and stop.
 - Input must be a **PDF**. No arXiv id / LaTeX source ingest in this version.
 - Pick the theme. Default is the bundled **Simple** theme with its pre-built
-  `paper2beamer/isa/Simple.md`. If the workspace `template/theme.tex` selects a
-  different theme and no `isa/<Theme>.md` exists, run `references/isa-setup.md`
+  `paper2beamer/isa/Simple.yaml`. If the workspace `template/theme.tex` selects a
+  different theme and no `isa/<Theme>.yaml` exists, run `references/isa-setup.md`
   first.
 
 ## Optional setups (bypassable, run once, persisted)
 
-- **ISA setup** — `references/isa-setup.md`: build `isa/<Theme>.md` from a
+- **ISA setup** — `references/isa-setup.md`: build `isa/<Theme>.yaml` from a
   `beamerthemeXxx.sty`. Only needed for non-Simple themes.
 - **Domain setup** — `references/domain-setup.md`: build `template/domain.md`
   from a representative paper plus a few questions. Skipped → field-neutral.
@@ -69,7 +69,7 @@ Each step has a reference guide; follow it.
 
 Per paper, everything lands under `slides/<slug>/` (see
 `references/pipeline-overview.md` for the full map). Themes' ISAs live in
-`isa/<Theme>.md` (shipped Simple ISA is at `paper2beamer/isa/Simple.md`).
+`isa/<Theme>.yaml` (shipped Simple ISA is at `paper2beamer/isa/Simple.yaml`).
 
 ## Deterministic tooling (under `scripts/`)
 

@@ -51,6 +51,14 @@ python3 eval/grade_structural.py --slides <run>/slides/<slug> \
   --manifest <run>/manifest.json --out structural.json
 ```
 
+## Sample output
+
+[`sample-output/aiayn/`](sample-output/aiayn/) holds a committed reference deck
+produced by one eval run: the Narrative IR (`narrative.md`), the Slide IR
+(`slides.md`), and the compiled deck (`main.pdf`, 17 pages). It scored 7/7
+structural and 4.75/5 on the judge. Unlike per-run artifacts under `runs/`, this
+one is tracked so the repo has a concrete example of what a good run produces.
+
 ## Tests (CI-friendly)
 
 The grader is pure Python and unit-tested; the full eval run needs the model and

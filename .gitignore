@@ -22,6 +22,10 @@ __pycache__/
 build/
 *.pdf
 
+# Exception: the committed AIAYN sample deck (a reference output of the harness).
+# AIAYN grants reuse of its figures for scholarly works; this is our own deck.
+!eval/sample-output/**/*.pdf
+
 # Keep the golden fixture and committed sample figures despite the rules above
 !paper2beamer/tests/fixtures/**/figures/*.png
 # Keep eval golden-IR figures (committed input fixtures, not generated output)

@@ -8,8 +8,8 @@ provides: [Base@1, Zsem@1, SpecialFrames@1, Density@1, OverflowGuard@1]
 options:
   - { name: eyebrow, type: freetext }
   - { name: density, values: [normal, dense], default: normal }
-  - { name: divider, values: [on, off], default: on }
-  - { name: overflowguard, values: [on, off], default: off, required_value: on }
+  - { name: divider, values: ["on", "off"], default: "on" }
+  - { name: overflowguard, values: ["on", "off"], default: "off", required_value: "on" }
 # Provisional capacity carried from the prose ISA; OVERWRITTEN by capacity_probe
 # in Plan 2. Numbers are planning hints; the overflow guard is the hard gate.
 capacity:

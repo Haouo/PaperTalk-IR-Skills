@@ -71,3 +71,33 @@ def test_simple_theme_validates_and_declares_expected_extensions():
     provided = {p.split("@")[0] for p in data["provides"]}
     assert provided == {"Base", "Zsem", "SpecialFrames", "Density", "OverflowGuard"}
     assert data["meta"]["aspectratio"] == "169"
+
+
+from scripts.isa_resolve import resolve
+
+
+def test_resolve_simple_unions_extension_and_base_instructions():
+    eff = resolve("Simple", ISA_DIR)
+    # From SpecialFrames + Zsem + Base:
+    assert "statementframe" in eff.allowed_macros
+    assert "alert" in eff.allowed_macros
+    assert "section" in eff.allowed_macros
+    # From the base allowlist:
+    assert "textbf" in eff.allowed_macros
+    assert "itemize" in eff.allowed_environments
+    # Zsem blocks require a title:
+    assert "block" in eff.blocks_requiring_title
+
+
+def test_resolve_carries_options_and_aspectratio():
+    eff = resolve("Simple", ISA_DIR)
+    assert eff.aspectratio == "169"
+    assert eff.options["overflowguard"]["required_value"] == "on"
+
+
+def test_resolve_provides_argspecs_for_known_custom_macros():
+    eff = resolve("Simple", ISA_DIR)
+    # statementframe takes one mandatory arg -> pylatexenc spec "{".
+    assert eff.macro_argspecs["statementframe"] == "{"
+    # thanksframe takes two optional args -> "[[".
+    assert eff.macro_argspecs["thanksframe"] == "[["

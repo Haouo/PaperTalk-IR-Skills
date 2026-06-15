@@ -4,7 +4,7 @@ meta:
   isa_version: 1
   engine: xelatex
   aspectratio: "169"
-provides: [Base@1, Zsem@1, SpecialFrames@1, Density@1, OverflowGuard@1]
+provides: [Base@1, Zsem@1, SpecialFrames@1, Density@1, OverflowGuard@1, Theorems@1, Columns@1]
 options:
   - { name: eyebrow, type: freetext }
   - { name: density, values: [normal, dense], default: normal }

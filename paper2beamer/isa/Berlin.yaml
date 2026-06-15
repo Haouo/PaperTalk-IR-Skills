@@ -1,0 +1,19 @@
+meta:
+  theme: Berlin
+  sty: stock-beamer
+  isa_version: 1
+  engine: xelatex
+  aspectratio: "169"
+# Stock third-party Beamer theme, used for the RQ4/RQ5 sweep. Profile matches the
+# other stock themes (Base+Zsem+Theorems+Columns); provides NEITHER our
+# SpecialFrames NOR our invented OverflowGuard. Capacity deferred to RQ3 (the
+# RQ4/RQ5 measurement does not use it).
+provides: [Base@1, Zsem@1, Theorems@1, Columns@1]
+options: []
+custom_instructions: []
+structural_idioms:
+  - { rule: deck_requires_short_title, severity: error }
+  - { rule: block_requires_title, severity: error }
+prose: |
+  Berlin: header navigation bars showing section/subsection dots, eating vertical space at the top. Use \maketitle for the title page (no special frames). No hard overflow
+  guard; capacity is advisory.

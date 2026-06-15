@@ -69,7 +69,7 @@ def test_simple_theme_validates_and_declares_expected_extensions():
     data = yaml.safe_load((ISA_DIR / "Simple.yaml").read_text())
     _validate(data, "theme")
     provided = {p.split("@")[0] for p in data["provides"]}
-    assert provided == {"Base", "Zsem", "SpecialFrames", "Density", "OverflowGuard"}
+    assert provided == {"Base", "Zsem", "SpecialFrames", "Density", "OverflowGuard", "Theorems", "Columns"}
     assert data["meta"]["aspectratio"] == "169"
 
 
